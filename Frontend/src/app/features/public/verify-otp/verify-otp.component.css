@@ -1,0 +1,142 @@
+.otp-page {
+  min-height: 100vh;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(45, 108, 223, 0.12), transparent 28%),
+    linear-gradient(180deg, #f7f9fc 0%, #eef3f9 100%);
+}
+
+.otp-shell {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.otp-card {
+  padding: 28px;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.otp-top {
+  margin-bottom: 18px;
+}
+
+.otp-top h1 {
+  margin: 0 0 8px;
+  color: #132238;
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.subtitle {
+  margin: 0;
+  color: #667085;
+  font-size: 15px;
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.meta-box {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid #e4ebf5;
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+
+.meta-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #667085;
+  margin-bottom: 6px;
+}
+
+.full {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.cooldown-box {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #f5f8ff;
+  color: #1d4ed8;
+  border: 1px solid #dbe7ff;
+  font-size: 14px;
+}
+
+.error-box,
+.success-box {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.error-box {
+  background: #fff1f2;
+  color: #b42318;
+  border: 1px solid #fecdd3;
+}
+
+.success-box {
+  background: #ecfdf3;
+  color: #027a48;
+  border: 1px solid #abefc6;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.action-btn {
+  min-width: 150px;
+}
+
+.primary-btn {
+  margin-left: auto;
+}
+
+@media (max-width: 768px) {
+  .meta-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .otp-page {
+    padding: 14px;
+  }
+
+  .otp-card {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .otp-top h1 {
+    font-size: 24px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .action-btn,
+  .primary-btn {
+    width: 100%;
+    margin-left: 0;
+  }
+}

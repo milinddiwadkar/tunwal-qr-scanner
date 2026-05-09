@@ -1,0 +1,91 @@
+<div class="page">
+  <div class="header">
+    <h1>QR Management</h1>
+    <div class="actions">
+      <a mat-stroked-button routerLink="/admin/dashboard">Dashboard</a>
+      <a mat-stroked-button routerLink="/admin/qr-list">QR List</a>
+    </div>
+  </div>
+
+  <mat-tab-group>
+
+    <!-- SINGLE QR -->
+    <mat-tab label="Single QR">
+      <div class="tab-content">
+        <mat-card class="card">
+
+          <h2>Create Single QR</h2>
+
+          <button mat-raised-button color="primary" (click)="createQr()" [disabled]="loading()">
+            {{ loading() ? 'Creating...' : 'Create QR' }}
+          </button>
+
+          <div class="error" *ngIf="error()">{{ error() }}</div>
+
+          <div *ngIf="createdQr() as qr" class="result">
+            <h3>{{ qr.qrId }}</h3>
+
+            <img [src]="qr.qrImageDataUrl" />
+
+            <p class="link">{{ qr.activationLink }}</p>
+
+            <button mat-raised-button color="accent" (click)="downloadQr()">
+              Download QR
+            </button>
+          </div>
+
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- BULK QR -->
+    <mat-tab label="Bulk QR">
+      <div class="tab-content">
+        <mat-card class="card">
+
+          <h2>Bulk QR Generator</h2>
+
+          <div class="bulk-toolbar">
+            <input
+              type="number"
+              [(ngModel)]="bulkCount"
+              min="1"
+              max="500"
+              placeholder="Enter quantity"
+            />
+
+            <button mat-raised-button color="primary" (click)="createBulk()" [disabled]="bulkLoading()">
+              {{ bulkLoading() ? 'Generating...' : 'Generate' }}
+            </button>
+          </div>
+
+          <!-- LOADER -->
+          <div *ngIf="bulkLoading()" class="progress-box">
+            <p>Generating QRs... please wait</p>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+          </div>
+
+          <div class="bulk-summary" *ngIf="bulkResult().length">
+            {{ bulkResult().length }} QR codes generated
+          </div>
+
+          <div class="bulk-grid" *ngIf="bulkResult().length">
+            <div class="qr-card" *ngFor="let qr of bulkResult()">
+              <img [src]="qr.qrImageDataUrl" />
+              <p>{{ qr.qrId }}</p>
+            </div>
+          </div>
+
+          <!-- ACTION BUTTONS -->
+          <div class="bulk-actions" *ngIf="bulkResult().length">
+            <button mat-raised-button color="accent" (click)="downloadZip()">Download ZIP</button>
+            <button mat-raised-button color="primary" (click)="downloadCSV()">Export CSV</button>
+            <button mat-raised-button color="warn" (click)="printSheet()">Print Sheet</button>
+          </div>
+
+        </mat-card>
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

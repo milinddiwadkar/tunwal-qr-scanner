@@ -1,0 +1,41 @@
+.page {
+  padding: 24px;
+  background: #f6f7fb;
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+mat-card {
+  padding: 20px;
+}
+
+p {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.error {
+  color: #c62828;
+  margin-bottom: 16px;
+}

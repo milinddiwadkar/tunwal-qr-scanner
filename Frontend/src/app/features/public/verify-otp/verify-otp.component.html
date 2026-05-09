@@ -1,0 +1,101 @@
+<div class="otp-page">
+  <div class="otp-shell">
+    <mat-card class="otp-card">
+      <div class="otp-top">
+        <span class="step-tag">Step 2: OTP Verification</span>
+        <h1>Verify OTP</h1>
+        <p class="subtitle">
+          Enter the one-time password sent to your mobile number. After verification,
+          you will continue to warranty registration.
+        </p>
+      </div>
+
+      <div class="meta-grid">
+        <div class="meta-box">
+          <span class="meta-label">QR ID</span>
+          <strong>{{ qrId }}</strong>
+        </div>
+
+        <div class="meta-box">
+          <span class="meta-label">Mobile</span>
+          <strong>{{ maskedMobileNumber || 'Not found' }}</strong>
+        </div>
+      </div>
+
+      <form [formGroup]="form">
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Enter OTP</mat-label>
+          <input
+            #otpInput
+            matInput
+            formControlName="otp"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            maxlength="6"
+            placeholder="Enter OTP"
+          />
+
+          <mat-error *ngIf="form.controls.otp.hasError('required')">
+            OTP is required
+          </mat-error>
+        </mat-form-field>
+
+        <div class="cooldown-box" *ngIf="!canResend()">
+          You can resend OTP in <strong>{{ resendCooldown() }}s</strong>
+        </div>
+
+        <div class="error-box" *ngIf="error()">
+          {{ error() }}
+        </div>
+
+        <div class="success-box" *ngIf="success()">
+          {{ success() }}
+        </div>
+
+        <div class="actions">
+          <button
+            mat-stroked-button
+            type="button"
+            class="action-btn"
+            [routerLink]="['/activate', qrId]"
+            [disabled]="loading() || checkingNextStep()"
+          >
+            Back
+          </button>
+
+          <button
+            mat-stroked-button
+            color="primary"
+            type="button"
+            class="action-btn"
+            (click)="resendOtp()"
+            [disabled]="resending() || !canResend() || loading() || checkingNextStep()"
+          >
+            {{ resending() ? 'Resending...' : (canResend() ? 'Resend OTP' : 'Resend Locked') }}
+          </button>
+
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            class="action-btn primary-btn"
+            (click)="verifyOtp()"
+            [disabled]="loading() || checkingNextStep()"
+          >
+            {{
+              loading()
+                ? 'Verifying OTP...'
+                : checkingNextStep()
+                  ? 'Checking next step...'
+                  : 'Verify & Continue'
+            }}
+          </button>
+        </div>
+      </form>
+
+      <div class="flow-note">
+        Next: Warranty registration is mandatory. Emergency profile activation is optional after warranty.
+      </div>
+    </mat-card>
+  </div>
+</div>

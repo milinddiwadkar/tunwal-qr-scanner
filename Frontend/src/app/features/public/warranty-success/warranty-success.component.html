@@ -1,0 +1,129 @@
+<div class="success-page">
+  <header class="company-header">
+    <div class="company-left">
+      <img src="/assets/logo.png" alt="Tunwal E-Motors Logo" class="company-logo" />
+
+      <div>
+        <h2>Tunwal E-Motors</h2>
+        <p>Official Warranty Registration Portal</p>
+      </div>
+    </div>
+
+    <div class="company-right">
+      Emergency QR System
+    </div>
+  </header>
+
+  <main class="success-shell">
+    <mat-card class="success-card">
+      <div class="success-icon">✓</div>
+
+      <span class="badge">Warranty Submitted</span>
+
+      <h1>Warranty Registration Completed</h1>
+
+      <p class="main-text">
+        Your scooter warranty details have been submitted successfully.
+        Warranty data is private and visible only to authorized admin users.
+      </p>
+
+      <div class="qr-summary">
+        <span>QR ID</span>
+        <strong>{{ qrId }}</strong>
+      </div>
+
+      <ng-container *ngIf="!skipped(); else skippedState">
+        <div class="next-box">
+          <div class="next-icon">🛡️</div>
+
+          <div>
+            <h3>Emergency Profile is Optional</h3>
+            <p>
+              You can activate Emergency QR Profile for safety assistance.
+              This may include medical details and emergency contact information.
+              This step is not mandatory.
+            </p>
+          </div>
+        </div>
+
+        <div class="choice-grid">
+          <button
+            mat-raised-button
+            color="primary"
+            class="primary-action"
+            type="button"
+            (click)="activateEmergency()"
+            [disabled]="loading()"
+          >
+            Activate Emergency Profile
+          </button>
+
+          <button
+            mat-stroked-button
+            color="primary"
+            class="secondary-action"
+            type="button"
+            (click)="skipEmergency()"
+            [disabled]="loading()"
+          >
+            {{ loading() ? 'Please wait...' : 'Skip for Now' }}
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-template #skippedState>
+        <div class="final-box">
+          <div class="final-icon">✓</div>
+
+          <h3>Warranty Registration Completed</h3>
+
+          <p>
+            Emergency profile has been skipped for now. Your QR remains valid for
+            warranty records. You can activate the emergency profile later using the same QR.
+          </p>
+
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            class="primary-action"
+            (click)="activateLater()"
+          >
+            Activate Emergency Later
+          </button>
+        </div>
+      </ng-template>
+
+      <div class="message success-message" *ngIf="message()">
+        {{ message() }}
+      </div>
+
+      <div class="message error-message" *ngIf="error()">
+        {{ error() }}
+      </div>
+    </mat-card>
+
+    <aside class="info-card">
+      <h3>What happens next?</h3>
+
+      <div class="info-step">
+        <span>1</span>
+        <p>Warranty details are saved privately for future claim verification.</p>
+      </div>
+
+      <div class="info-step">
+        <span>2</span>
+        <p>Emergency Profile can be activated only if the customer wants safety assistance.</p>
+      </div>
+
+      <div class="info-step">
+        <span>3</span>
+        <p>If skipped, QR remains valid for warranty records. Emergency profile can be activated later.</p>
+      </div>
+
+      <div class="privacy-note">
+        Emergency contacts are never required for warranty registration.
+      </div>
+    </aside>
+  </main>
+</div>

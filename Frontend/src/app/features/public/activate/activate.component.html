@@ -1,0 +1,76 @@
+<div class="activate-page">
+  <mat-card class="activate-card">
+    <div *ngIf="loading()" class="center-state">
+      <div class="spinner"></div>
+      <h2>Checking QR...</h2>
+      <p>Please wait while we verify this QR code.</p>
+    </div>
+
+    <div *ngIf="!loading() && error()" class="error-box">
+      {{ error() }}
+    </div>
+
+    <div *ngIf="!loading() && showOtpForm()" class="otp-section">
+      <div class="header">
+        <span class="tag">Step 1: Mobile Verification</span>
+        <h2>Verify Mobile Number</h2>
+        <p>
+          Please verify your mobile number before continuing with warranty registration.
+        </p>
+      </div>
+
+      <div class="status-box">
+        <div class="status-row">
+          <span>QR ID</span>
+          <strong>{{ qrId }}</strong>
+        </div>
+
+        <div class="status-row">
+          <span>Warranty Status</span>
+          <strong>{{ warrantyStatus() }}</strong>
+        </div>
+
+        <div class="status-row">
+          <span>Emergency Status</span>
+          <strong>{{ emergencyStatus() }}</strong>
+        </div>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="sendOtp()">
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Mobile Number</mat-label>
+          <input
+            matInput
+            type="text"
+            formControlName="mobile"
+            maxlength="10"
+            placeholder="Enter 10 digit mobile number"
+          />
+
+          <mat-error *ngIf="form.controls.mobile.hasError('required')">
+            Mobile number is required
+          </mat-error>
+
+          <mat-error *ngIf="form.controls.mobile.hasError('pattern')">
+            Enter a valid 10 digit mobile number
+          </mat-error>
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          class="full submit-btn"
+          type="submit"
+          [disabled]="sendingOtp()"
+        >
+          {{ sendingOtp() ? 'Sending OTP...' : 'Send OTP' }}
+        </button>
+      </form>
+
+      <div class="privacy-note">
+        After OTP verification, you will complete mandatory warranty registration.
+        Emergency profile activation is optional.
+      </div>
+    </div>
+  </mat-card>
+</div>

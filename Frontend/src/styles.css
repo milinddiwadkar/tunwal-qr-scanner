@@ -1,0 +1,9 @@
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #f6f7fb;
+}

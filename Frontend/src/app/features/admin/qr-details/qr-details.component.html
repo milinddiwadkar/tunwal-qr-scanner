@@ -1,0 +1,92 @@
+<div class="page">
+  <div class="topbar">
+    <h2>QR Details</h2>
+    <div class="actions">
+      <a mat-stroked-button routerLink="/admin/qr-list">Back to QR List</a>
+      <a mat-stroked-button routerLink="/admin/dashboard">Dashboard</a>
+    </div>
+  </div>
+
+  <div *ngIf="loading()">Loading QR details...</div>
+  <div class="error" *ngIf="error()">{{ error() }}</div>
+  <div class="success" *ngIf="success()">{{ success() }}</div>
+
+  <div *ngIf="data() as d" class="grid">
+    <mat-card class="card">
+      <h3>QR Information</h3>
+
+      <img *ngIf="d.qr?.qrImageDataUrl" [src]="d.qr.qrImageDataUrl" [alt]="d.qr.qrId" class="qr-image" />
+
+      <p><strong>QR ID:</strong> {{ d.qr?.qrId }}</p>
+      <p><strong>Status:</strong> {{ d.qr?.status }}</p>
+      <p><strong>Blocked Reason:</strong> {{ d.qr?.blockedReason || 'N/A' }}</p>
+      <p><strong>Created:</strong> {{ d.qr?.createdAt | date:'medium' }}</p>
+      <p><strong>Updated:</strong> {{ d.qr?.updatedAt | date:'medium' }}</p>
+
+      <div class="action-buttons">
+        <button
+          mat-raised-button
+          color="warn"
+          *ngIf="d.qr?.status !== 'blocked'"
+          [disabled]="actionLoading()"
+          (click)="blockQr()"
+        >
+          {{ actionLoading() ? 'Please wait...' : 'Block QR' }}
+        </button>
+
+        <button
+          mat-raised-button
+          color="primary"
+          *ngIf="d.qr?.status === 'blocked'"
+          [disabled]="actionLoading()"
+          (click)="unblockQr()"
+        >
+          {{ actionLoading() ? 'Please wait...' : 'Unblock QR' }}
+        </button>
+      </div>
+    </mat-card>
+
+    <mat-card class="card">
+      <h3>Customer Information</h3>
+      <ng-container *ngIf="d.customer; else noCustomer">
+        <p><strong>Name:</strong> {{ d.customer.customerName }}</p>
+        <p><strong>Mobile:</strong> {{ d.customer.mobileNumber }}</p>
+        <p><strong>Email:</strong> {{ d.customer.email || 'N/A' }}</p>
+        <p><strong>Blood Group:</strong> {{ d.customer.bloodGroup || 'N/A' }}</p>
+        <p><strong>Disease:</strong> {{ d.customer.disease || 'N/A' }}</p>
+        <p><strong>Address:</strong> {{ d.customer.address || 'N/A' }}</p>
+      </ng-container>
+      <ng-template #noCustomer>
+        <p>Customer not registered yet.</p>
+      </ng-template>
+    </mat-card>
+
+    <mat-card class="card">
+      <h3>Vehicle Information</h3>
+      <ng-container *ngIf="d.customer; else noVehicle">
+        <p><strong>Vehicle Name:</strong> {{ d.customer.vehicleName || 'N/A' }}</p>
+        <p><strong>Chassis Number:</strong> {{ d.customer.chassisNumber || 'N/A' }}</p>
+        <p><strong>Motor Number:</strong> {{ d.customer.motorNumber || 'N/A' }}</p>
+        <p><strong>Showroom Name:</strong> {{ d.customer.showroomName || 'N/A' }}</p>
+      </ng-container>
+      <ng-template #noVehicle>
+        <p>Vehicle data not available yet.</p>
+      </ng-template>
+    </mat-card>
+
+    <mat-card class="card">
+      <h3>Emergency Contacts</h3>
+      <ng-container *ngIf="d.contacts?.contacts?.length; else noContacts">
+        <div *ngFor="let c of d.contacts.contacts" class="contact-box">
+          <p><strong>Name:</strong> {{ c.name }}</p>
+          <p><strong>Mobile:</strong> {{ c.mobile }}</p>
+          <p><strong>Email:</strong> {{ c.email || 'N/A' }}</p>
+          <p><strong>Relation:</strong> {{ c.relation }}</p>
+        </div>
+      </ng-container>
+      <ng-template #noContacts>
+        <p>No emergency contacts found.</p>
+      </ng-template>
+    </mat-card>
+  </div>
+</div>

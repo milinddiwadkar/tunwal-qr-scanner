@@ -1,0 +1,71 @@
+<div class="page">
+  <div class="topbar">
+    <h2>QR List</h2>
+    <div class="actions">
+      <a mat-stroked-button routerLink="/admin/dashboard">Dashboard</a>
+      <a mat-raised-button color="primary" routerLink="/admin/create-qr">Create QR</a>
+    </div>
+  </div>
+
+  <div class="search-bar">
+    <input [(ngModel)]="search" placeholder="Search by QR ID, customer, mobile, vehicle, showroom" />
+    <button mat-raised-button color="primary" (click)="load()">Search</button>
+  </div>
+
+  <div *ngIf="loading()">Loading QRs...</div>
+  <div class="error" *ngIf="error()">{{ error() }}</div>
+
+  <table mat-table [dataSource]="rows()" class="mat-elevation-z2" *ngIf="!loading()">
+    <ng-container matColumnDef="image">
+      <th mat-header-cell *matHeaderCellDef>QR</th>
+      <td mat-cell *matCellDef="let row">
+        <img *ngIf="row.qrImageDataUrl" [src]="row.qrImageDataUrl" [alt]="row.qrId" class="thumb" />
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="qrId">
+      <th mat-header-cell *matHeaderCellDef>QR ID</th>
+      <td mat-cell *matCellDef="let row">{{ row.qrId }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let row">{{ row.status }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="customerName">
+      <th mat-header-cell *matHeaderCellDef>Customer</th>
+      <td mat-cell *matCellDef="let row">{{ row.customerName || 'Not Registered' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="mobileNumber">
+      <th mat-header-cell *matHeaderCellDef>Mobile</th>
+      <td mat-cell *matCellDef="let row">{{ row.mobileNumber || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="vehicleName">
+      <th mat-header-cell *matHeaderCellDef>Vehicle</th>
+      <td mat-cell *matCellDef="let row">{{ row.vehicleName || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="showroomName">
+      <th mat-header-cell *matHeaderCellDef>Showroom</th>
+      <td mat-cell *matCellDef="let row">{{ row.showroomName || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="createdAt">
+      <th mat-header-cell *matHeaderCellDef>Created</th>
+      <td mat-cell *matCellDef="let row">{{ row.createdAt | date:'medium' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let row">
+        <a mat-button color="primary" [routerLink]="['/admin/qr', row._id]">View</a>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>

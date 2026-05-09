@@ -1,0 +1,81 @@
+<div class="emergency-page">
+  <div class="shell">
+    <div *ngIf="loading()" class="state-box loading-box">
+      Loading emergency details...
+    </div>
+
+    <div *ngIf="error()" class="state-box error-box">
+      {{ error() }}
+    </div>
+
+    <ng-container *ngIf="data() as d">
+      <div class="hazard-wrap">
+        <div class="inner-panel">
+          <div class="logo-wrap">
+            <img src="/assets/logo.png" alt="Company Logo" class="logo" />
+          </div>
+
+          <div class="id-wrap">
+            <div class="big-id">
+              <span class="id-prefix">QRID</span>
+              <span class="id-value">{{ d.qrId }}</span>
+            </div>
+            <div class="thank-text">Thank you for Scanning!</div>
+          </div>
+
+          <div class="alert-strip">
+            {{ alertMessage() }}
+          </div>
+
+          <div class="owner-card">
+            <div class="owner-left">
+              <div class="owner-line">This is: <strong>{{ d.owner.customerName }}</strong></div>
+              <div class="owner-line">Health Condition: <strong>{{ d.owner.disease || 'Good' }}</strong></div>
+              <div class="owner-line">Age: <strong>N/A</strong></div>
+            </div>
+
+            <div class="owner-right">
+              <div class="blood-emoji">🩸</div>
+              <div class="blood-label">Blood Group</div>
+              <div class="blood-value">{{ d.owner.bloodGroup || 'N/A' }}</div>
+            </div>
+          </div>
+
+          <div class="services-title">Emergency Services</div>
+
+          <div class="services-row">
+            <a class="service-link" [href]="'tel:' + d.actions.police">
+              <div class="service-icon">👮</div>
+              <div class="service-text">Call Police</div>
+            </a>
+
+            <a class="service-link" [href]="'tel:' + d.actions.ambulance">
+              <div class="service-icon">🚑</div>
+              <div class="service-text">Call Ambulance</div>
+            </a>
+
+            <button class="service-link service-btn" type="button" (click)="sendAlert()" [disabled]="alerting()">
+              <div class="service-icon">🚨</div>
+              <div class="service-text">{{ alerting() ? 'Sending...' : 'Send Alert' }}</div>
+            </button>
+
+            <a class="service-link" *ngIf="primaryContact" [href]="'tel:' + primaryContact.mobile">
+              <div class="service-icon">📞</div>
+              <div class="service-text">Call Contact</div>
+            </a>
+          </div>
+
+          <button
+            class="main-pill pink-pill"
+            type="button"
+            (click)="findNearbyHospital()"
+            [disabled]="locatingHospital()"
+          >
+            <span class="pill-icon">🏥</span>
+            <span>{{ locatingHospital() ? 'Finding Nearby Hospitals' : 'Find Nearby Hospitals' }}</span>
+          </button>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

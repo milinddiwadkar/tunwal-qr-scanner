@@ -1,0 +1,65 @@
+.page {
+  padding: 24px;
+  background: #f6f7fb;
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  padding: 20px;
+}
+
+.qr-image {
+  width: 220px;
+  max-width: 100%;
+  display: block;
+  margin-bottom: 16px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  background: white;
+}
+
+.contact-box {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #fafafa;
+}
+
+.action-buttons {
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.error {
+  color: #c62828;
+  margin-bottom: 12px;
+}
+
+.success {
+  color: #2e7d32;
+  margin-bottom: 12px;
+}

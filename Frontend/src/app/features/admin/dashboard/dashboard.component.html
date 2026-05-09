@@ -1,0 +1,23 @@
+<div class="page">
+  <div class="topbar">
+    <h2>Admin Dashboard</h2>
+    <div class="actions">
+      <a mat-raised-button color="primary" routerLink="/admin/create-qr">Create QR</a>
+      <a mat-raised-button routerLink="/admin/qr-list">QR List</a>
+      <button mat-stroked-button color="warn" (click)="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div *ngIf="loading()">Loading dashboard...</div>
+  <div class="error" *ngIf="error()">{{ error() }}</div>
+
+  <div class="grid" *ngIf="data() as d">
+    <mat-card><h3>Total QRs</h3><p>{{ d.totalQrs }}</p></mat-card>
+    <mat-card><h3>Active QRs</h3><p>{{ d.activeQrs }}</p></mat-card>
+    <mat-card><h3>Inactive QRs</h3><p>{{ d.inactiveQrs }}</p></mat-card>
+    <mat-card><h3>Blocked QRs</h3><p>{{ d.blockedQrs }}</p></mat-card>
+    <mat-card><h3>Total Customers</h3><p>{{ d.totalCustomers }}</p></mat-card>
+    <mat-card><h3>Total Scans</h3><p>{{ d.totalScans }}</p></mat-card>
+    <mat-card><h3>Total Alerts</h3><p>{{ d.totalAlerts }}</p></mat-card>
+  </div>
+</div>
