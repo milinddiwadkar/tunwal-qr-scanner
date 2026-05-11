@@ -2,28 +2,63 @@ const ExcelJS = require('exceljs');
 const Warranty = require('../models/Warranty');
 const asyncHandler = require('../utils/asyncHandler');
 
-const getWarrantyRecords = asyncHandler(async (req, res) => {
-  const search = String(req.query.search || '').trim();
+function buildWarrantyFilter(query) {
+  const search = String(query.search || '').trim();
+  const startDate = query.startDate ? new Date(query.startDate) : null;
+  const endDate = query.endDate ? new Date(query.endDate) : null;
+  const month = String(query.month || '').trim(); // format: YYYY-MM
 
-  const filter = search
-    ? {
-        $or: [
-          { qrId: { $regex: search, $options: 'i' } },
-          { scooterName: { $regex: search, $options: 'i' } },
-          { scooterColor: { $regex: search, $options: 'i' } },
-          { controllerNumber: { $regex: search, $options: 'i' } },
-          { batteryNumber: { $regex: search, $options: 'i' } },
-          { motorNumber: { $regex: search, $options: 'i' } },
-          { chassisNumber: { $regex: search, $options: 'i' } },
-          { chargerNumber: { $regex: search, $options: 'i' } },
-          { dealerName: { $regex: search, $options: 'i' } },
-          { customerName: { $regex: search, $options: 'i' } },
-          { contactNumber: { $regex: search, $options: 'i' } },
-          { dealerAddress: { $regex: search, $options: 'i' } },
-          { state: { $regex: search, $options: 'i' } }
-        ]
-      }
-    : {};
+  const filter = {};
+
+  if (search) {
+    filter.$or = [
+      { qrId: { $regex: search, $options: 'i' } },
+      { scooterName: { $regex: search, $options: 'i' } },
+      { scooterColor: { $regex: search, $options: 'i' } },
+      { controllerNumber: { $regex: search, $options: 'i' } },
+      { batteryNumber: { $regex: search, $options: 'i' } },
+      { motorNumber: { $regex: search, $options: 'i' } },
+      { chassisNumber: { $regex: search, $options: 'i' } },
+      { chargerNumber: { $regex: search, $options: 'i' } },
+      { dealerName: { $regex: search, $options: 'i' } },
+      { customerName: { $regex: search, $options: 'i' } },
+      { contactNumber: { $regex: search, $options: 'i' } },
+      { dealerAddress: { $regex: search, $options: 'i' } },
+      { state: { $regex: search, $options: 'i' } }
+    ];
+  }
+
+  if (month) {
+    const [year, monthNumber] = month.split('-').map(Number);
+
+    if (year && monthNumber) {
+      const monthStart = new Date(year, monthNumber - 1, 1);
+      const monthEnd = new Date(year, monthNumber, 1);
+
+      filter.createdAt = {
+        $gte: monthStart,
+        $lt: monthEnd
+      };
+    }
+  } else if (startDate || endDate) {
+    filter.createdAt = {};
+
+    if (startDate) {
+      startDate.setHours(0, 0, 0, 0);
+      filter.createdAt.$gte = startDate;
+    }
+
+    if (endDate) {
+      endDate.setHours(23, 59, 59, 999);
+      filter.createdAt.$lte = endDate;
+    }
+  }
+
+  return filter;
+}
+
+const getWarrantyRecords = asyncHandler(async (req, res) => {
+  const filter = buildWarrantyFilter(req.query);
 
   const records = await Warranty.find(filter).sort({ createdAt: -1 });
 
@@ -64,108 +99,36 @@ const updateWarrantyDetail = asyncHandler(async (req, res) => {
     });
   }
 
-  const {
-    scooterName,
-    scooterColor,
-    controllerNumber,
-    batteryNumber,
-    motorNumber,
-    chassisNumber,
-    chargerNumber,
-    dealerName,
-    dealerAddress,
-    state,
-    dateOfSale,
-    customerName,
-    contactNumber
-  } = req.body;
+  const allowedFields = [
+    'scooterName',
+    'scooterColor',
+    'controllerNumber',
+    'batteryNumber',
+    'motorNumber',
+    'chassisNumber',
+    'chargerNumber',
+    'dealerName',
+    'dealerAddress',
+    'state',
+    'dateOfSale',
+    'customerName',
+    'contactNumber'
+  ];
 
-  if (
-    !scooterName ||
-    !scooterColor ||
-    !controllerNumber ||
-    !batteryNumber ||
-    !motorNumber ||
-    !chassisNumber ||
-    !chargerNumber ||
-    !dealerName ||
-    !dealerAddress ||
-    !state ||
-    !dateOfSale ||
-    !customerName ||
-    !contactNumber
-  ) {
-    return res.status(400).json({
-      success: false,
-      message: 'All warranty fields are required'
-    });
-  }
-
-  if (!/^[0-9]{10}$/.test(String(contactNumber).trim())) {
-    return res.status(400).json({
-      success: false,
-      message: 'Contact number must be a valid 10 digit number'
-    });
-  }
-
-  const normalizedController = String(controllerNumber).trim().toUpperCase();
-  const normalizedBattery = String(batteryNumber).trim().toUpperCase();
-  const normalizedMotor = String(motorNumber).trim().toUpperCase();
-  const normalizedChassis = String(chassisNumber).trim().toUpperCase();
-  const normalizedCharger = String(chargerNumber).trim().toUpperCase();
-
-  const duplicateMotor = await Warranty.findOne({
-    qrId: { $ne: qrId },
-    motorNumber: normalizedMotor
+  allowedFields.forEach((field) => {
+    if (req.body[field] !== undefined) {
+      warranty[field] =
+        typeof req.body[field] === 'string'
+          ? req.body[field].trim()
+          : req.body[field];
+    }
   });
 
-  if (duplicateMotor) {
-    return res.status(400).json({
-      success: false,
-      message: 'Motor number already registered with another QR'
-    });
-  }
-
-  const duplicateChassis = await Warranty.findOne({
-    qrId: { $ne: qrId },
-    chassisNumber: normalizedChassis
-  });
-
-  if (duplicateChassis) {
-    return res.status(400).json({
-      success: false,
-      message: 'Chassis number already registered with another QR'
-    });
-  }
-
-  const duplicateBattery = await Warranty.findOne({
-    qrId: { $ne: qrId },
-    batteryNumber: normalizedBattery
-  });
-
-  if (duplicateBattery) {
-    return res.status(400).json({
-      success: false,
-      message: 'Battery number already registered with another QR'
-    });
-  }
-
-  warranty.scooterName = String(scooterName).trim();
-  warranty.scooterColor = String(scooterColor).trim();
-
-  warranty.controllerNumber = normalizedController;
-  warranty.batteryNumber = normalizedBattery;
-  warranty.motorNumber = normalizedMotor;
-  warranty.chassisNumber = normalizedChassis;
-  warranty.chargerNumber = normalizedCharger;
-
-  warranty.dealerName = String(dealerName).trim();
-  warranty.dealerAddress = String(dealerAddress).trim();
-  warranty.state = String(state).trim();
-  warranty.dateOfSale = dateOfSale;
-
-  warranty.customerName = String(customerName).trim();
-  warranty.contactNumber = String(contactNumber).trim();
+  if (warranty.controllerNumber) warranty.controllerNumber = warranty.controllerNumber.toUpperCase();
+  if (warranty.batteryNumber) warranty.batteryNumber = warranty.batteryNumber.toUpperCase();
+  if (warranty.motorNumber) warranty.motorNumber = warranty.motorNumber.toUpperCase();
+  if (warranty.chassisNumber) warranty.chassisNumber = warranty.chassisNumber.toUpperCase();
+  if (warranty.chargerNumber) warranty.chargerNumber = warranty.chargerNumber.toUpperCase();
 
   await warranty.save();
 
@@ -177,7 +140,9 @@ const updateWarrantyDetail = asyncHandler(async (req, res) => {
 });
 
 const exportWarrantyExcel = asyncHandler(async (req, res) => {
-  const records = await Warranty.find().sort({ createdAt: -1 }).lean();
+  const filter = buildWarrantyFilter(req.query);
+
+  const records = await Warranty.find(filter).sort({ createdAt: -1 }).lean();
 
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Warranty Records');
@@ -197,8 +162,7 @@ const exportWarrantyExcel = asyncHandler(async (req, res) => {
     { header: 'Date of Sale', key: 'dateOfSale', width: 18 },
     { header: 'Customer Name', key: 'customerName', width: 28 },
     { header: 'Contact Number', key: 'contactNumber', width: 18 },
-    { header: 'Registered At', key: 'createdAt', width: 24 },
-    { header: 'Last Updated At', key: 'updatedAt', width: 24 }
+    { header: 'Registered At', key: 'createdAt', width: 24 }
   ];
 
   records.forEach((record) => {
@@ -221,9 +185,6 @@ const exportWarrantyExcel = asyncHandler(async (req, res) => {
       contactNumber: record.contactNumber,
       createdAt: record.createdAt
         ? new Date(record.createdAt).toLocaleString('en-IN')
-        : '',
-      updatedAt: record.updatedAt
-        ? new Date(record.updatedAt).toLocaleString('en-IN')
         : ''
     });
   });
