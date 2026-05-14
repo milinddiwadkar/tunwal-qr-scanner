@@ -21,6 +21,9 @@ export class WarrantyRecordsComponent implements OnInit {
   error = signal('');
 
   search = '';
+  startDate = '';
+  endDate = '';
+  month = '';
 
   ngOnInit(): void {
     this.loadRecords();
@@ -30,11 +33,28 @@ export class WarrantyRecordsComponent implements OnInit {
     return this.records().length;
   }
 
+  get activeFilterText(): string {
+    if (this.month) return `Month: ${this.month}`;
+    if (this.startDate || this.endDate) {
+      return `${this.startDate || 'Start'} to ${this.endDate || 'End'}`;
+    }
+    return this.search ? 'Search Applied' : 'All Records';
+  }
+
+  buildFilters() {
+    return {
+      search: this.search,
+      startDate: this.month ? '' : this.startDate,
+      endDate: this.month ? '' : this.endDate,
+      month: this.month
+    };
+  }
+
   loadRecords(): void {
     this.loading.set(true);
     this.error.set('');
 
-    this.api.getWarrantyRecords(this.search).subscribe({
+    this.api.getWarrantyRecords(this.buildFilters()).subscribe({
       next: (res) => {
         this.loading.set(false);
         this.records.set(res.data || []);
@@ -46,9 +66,25 @@ export class WarrantyRecordsComponent implements OnInit {
     });
   }
 
-  clearSearch(): void {
+  clearFilters(): void {
     this.search = '';
+    this.startDate = '';
+    this.endDate = '';
+    this.month = '';
     this.loadRecords();
+  }
+
+  onMonthChange(): void {
+    if (this.month) {
+      this.startDate = '';
+      this.endDate = '';
+    }
+  }
+
+  onDateRangeChange(): void {
+    if (this.startDate || this.endDate) {
+      this.month = '';
+    }
   }
 
   openDetail(qrId: string): void {
@@ -59,15 +95,21 @@ export class WarrantyRecordsComponent implements OnInit {
     this.exporting.set(true);
     this.error.set('');
 
-    this.api.downloadWarrantyExcel().subscribe({
+    this.api.downloadWarrantyExcel(this.buildFilters()).subscribe({
       next: (blob) => {
         this.exporting.set(false);
 
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
 
+        const fileSuffix = this.month
+          ? this.month
+          : this.startDate || this.endDate
+            ? `${this.startDate || 'start'}-to-${this.endDate || 'end'}`
+            : 'all';
+
         link.href = url;
-        link.download = 'warranty-records.xlsx';
+        link.download = `warranty-records-${fileSuffix}.xlsx`;
         link.click();
 
         window.URL.revokeObjectURL(url);

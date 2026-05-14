@@ -182,6 +182,89 @@ const registerWarranty = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * Public API
+ * GET /api/warranty/basic/:qrId
+ *
+ * Used only to auto-fill Emergency Registration page.
+ * This returns limited warranty data only.
+ * Do not expose battery/controller/charger/dealer address here.
+ */
+const getWarrantyBasic = asyncHandler(async (req, res) => {
+  const normalizedQrId = String(req.params.qrId || '').trim().toUpperCase();
+
+  if (!normalizedQrId) {
+    return res.status(400).json({
+      success: false,
+      message: 'QR ID is required'
+    });
+  }
+
+  const qr = await QrCodeModel.findOne({ qrId: normalizedQrId });
+
+  if (!qr) {
+    return res.status(404).json({
+      success: false,
+      message: 'QR not found'
+    });
+  }
+
+  if (qr.status === 'blocked') {
+    return res.status(400).json({
+      success: false,
+      message: 'This QR is blocked'
+    });
+  }
+
+  if (qr.status === 'expired') {
+    return res.status(400).json({
+      success: false,
+      message: 'This QR is expired'
+    });
+  }
+
+  if (qr.status === 'scrapped') {
+    return res.status(400).json({
+      success: false,
+      message: 'This QR is scrapped'
+    });
+  }
+
+  if (qr.warrantyStatus !== 'registered') {
+    return res.status(400).json({
+      success: false,
+      message: 'Warranty registration is required before emergency activation'
+    });
+  }
+
+  const warranty = await Warranty.findOne({ qrId: normalizedQrId });
+
+  if (!warranty) {
+    return res.status(404).json({
+      success: false,
+      message: 'Warranty record not found'
+    });
+  }
+
+  return res.json({
+    success: true,
+    data: {
+      qrId: warranty.qrId,
+
+      customerName: warranty.customerName,
+      mobileNumber: warranty.contactNumber,
+
+      vehicleName: warranty.scooterName,
+      chassisNumber: warranty.chassisNumber,
+      motorNumber: warranty.motorNumber,
+      showroomName: warranty.dealerName,
+
+      emergencyStatus: qr.emergencyStatus || 'inactive'
+    }
+  });
+});
+
 module.exports = {
-  registerWarranty
+  registerWarranty,
+  getWarrantyBasic
 };

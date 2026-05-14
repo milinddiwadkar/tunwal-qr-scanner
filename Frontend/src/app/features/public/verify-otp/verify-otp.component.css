@@ -1,50 +1,100 @@
 .otp-page {
   min-height: 100vh;
   padding: 24px;
-  background:
-    radial-gradient(circle at top left, rgba(45, 108, 223, 0.12), transparent 28%),
-    linear-gradient(180deg, #f7f9fc 0%, #eef3f9 100%);
+  display: grid;
+  place-items: center;
+  background: #f5f7fb;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .otp-shell {
-  max-width: 680px;
+  width: 100%;
+  max-width: 620px;
   margin: 0 auto;
 }
 
 .otp-card {
   padding: 28px;
-  border-radius: 24px;
-  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
-  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: 22px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+}
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 20px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.brand-logo {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 6px;
+}
+
+.brand-header h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 23px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.brand-header p {
+  margin: 4px 0 0;
+  color: #08756f;
+  font-size: 14px;
+  font-weight: 800;
 }
 
 .otp-top {
   margin-bottom: 18px;
 }
 
+.step-tag {
+  display: inline-block;
+  background: #e8f5f3;
+  color: #08756f;
+  border: 1px solid #bfe7e2;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+
 .otp-top h1 {
   margin: 0 0 8px;
-  color: #132238;
+  color: #172033;
   font-size: 30px;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .subtitle {
   margin: 0;
-  color: #667085;
+  color: #64748b;
   font-size: 15px;
+  line-height: 1.6;
 }
 
 .meta-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   margin-bottom: 18px;
 }
 
 .meta-box {
-  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-  border: 1px solid #e4ebf5;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 14px 16px;
 }
@@ -52,11 +102,17 @@
 .meta-label {
   display: block;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #667085;
+  letter-spacing: 0.06em;
+  color: #64748b;
   margin-bottom: 6px;
+}
+
+.meta-box strong {
+  display: block;
+  color: #0f172a;
+  word-break: break-word;
 }
 
 .full {
@@ -68,10 +124,11 @@
   margin-bottom: 14px;
   padding: 12px 14px;
   border-radius: 12px;
-  background: #f5f8ff;
-  color: #1d4ed8;
-  border: 1px solid #dbe7ff;
+  background: #eff6ff;
+  color: #075985;
+  border: 1px solid #bfdbfe;
   font-size: 14px;
+  font-weight: 700;
 }
 
 .error-box,
@@ -80,19 +137,20 @@
   padding: 12px 14px;
   border-radius: 12px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
+  line-height: 1.5;
 }
 
 .error-box {
-  background: #fff1f2;
-  color: #b42318;
-  border: 1px solid #fecdd3;
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
 }
 
 .success-box {
-  background: #ecfdf3;
-  color: #027a48;
-  border: 1px solid #abefc6;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
 }
 
 .actions {
@@ -103,31 +161,44 @@
 }
 
 .action-btn {
-  min-width: 150px;
+  min-width: 140px;
+  min-height: 42px;
+  border-radius: 12px;
+  font-weight: 800;
 }
 
 .primary-btn {
   margin-left: auto;
 }
 
-@media (max-width: 768px) {
-  .meta-grid {
-    grid-template-columns: 1fr;
-  }
+.flow-note {
+  margin-top: 20px;
+  padding: 13px 14px;
+  border-radius: 14px;
+  color: #7c4a03;
+  background: #fffbea;
+  border: 1px solid #fde68a;
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 600;
 }
 
-@media (max-width: 640px) {
+::ng-deep .mat-mdc-text-field-wrapper {
+  border-radius: 13px;
+}
+
+@media (max-width: 768px) {
   .otp-page {
-    padding: 14px;
+    padding: 16px;
   }
 
   .otp-card {
-    padding: 18px;
+    padding: 22px;
     border-radius: 18px;
   }
 
-  .otp-top h1 {
-    font-size: 24px;
+  .meta-grid {
+    grid-template-columns: 1fr;
   }
 
   .actions {
@@ -138,5 +209,24 @@
   .primary-btn {
     width: 100%;
     margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-header {
+    align-items: flex-start;
+  }
+
+  .brand-logo {
+    width: 56px;
+    height: 56px;
+  }
+
+  .brand-header h2 {
+    font-size: 20px;
+  }
+
+  .otp-top h1 {
+    font-size: 24px;
   }
 }

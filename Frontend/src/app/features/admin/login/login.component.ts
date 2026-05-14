@@ -2,11 +2,14 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+
 import { AuthService } from '../../../core/services/auth.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -27,10 +30,13 @@ export class LoginComponent {
 
   loading = signal(false);
   error = signal('');
+  showPassword = signal(false);
+
+  isProduction = environment.production;
 
   form = this.fb.group({
-    email: ['admin@tunwal.local', [Validators.required, Validators.email]],
-    password: ['Admin@123', [Validators.required]]
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required]]
   });
 
   constructor(
@@ -38,9 +44,25 @@ export class LoginComponent {
     private router: Router
   ) {}
 
+  fillDemoLogin(): void {
+    if (this.isProduction) return;
+
+    this.form.patchValue({
+      email: 'admin@tunwal.local',
+      password: 'Admin@123'
+    });
+
+    this.error.set('');
+  }
+
+  togglePassword(): void {
+    this.showPassword.update((value) => !value);
+  }
+
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.error.set('Please enter valid email and password.');
       return;
     }
 
@@ -54,9 +76,9 @@ export class LoginComponent {
         this.loading.set(false);
         this.router.navigate(['/admin/dashboard']);
       },
-      error: err => {
+      error: (err) => {
         this.loading.set(false);
-        this.error.set(err?.error?.message || 'Login failed');
+        this.error.set(err?.error?.message || 'Login failed. Please check your credentials.');
       }
     });
   }

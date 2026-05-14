@@ -55,20 +55,6 @@ const loginAdmin = asyncHandler(async (req, res) => {
 const createQr = asyncHandler(async (req, res) => {
   const qrId = await generateQrId();
 
-  /*
-    One QR is used for two purposes:
-    1. Mandatory warranty registration
-    2. Optional emergency profile
-
-    QR should open the frontend resolver route:
-    /qr/:qrId
-
-    Frontend will decide:
-    - warranty pending -> warranty page
-    - warranty registered + emergency inactive/skipped -> warranty success page
-    - warranty registered + emergency active -> emergency page
-    - blocked -> blocked page
-  */
   const activationLink = `${process.env.APP_BASE_URL}/qr/${qrId}`;
   const emergencyLink = `${process.env.APP_BASE_URL}/emergency/${qrId}`;
 
@@ -79,15 +65,10 @@ const createQr = asyncHandler(async (req, res) => {
     qrImageDataUrl,
     activationLink,
     emergencyLink,
-
-    // Main QR lifecycle status
     status: 'inactive',
-
-    // Warranty is mandatory, emergency is optional
     warrantyStatus: 'pending',
     emergencyStatus: 'inactive',
     ownerMobile: '',
-
     createdBy: req.admin._id
   });
 
@@ -112,9 +93,9 @@ const bulkCreateQr = asyncHandler(async (req, res) => {
 
   count = Number(count);
 
-  if (!count || count < 1 || count > 500) {
+  if (!Number.isInteger(count) || count < 1 || count > 100) {
     return res.status(400).json({
-      message: 'Count must be between 1 and 500'
+      message: 'Count must be between 1 and 100'
     });
   }
 
@@ -133,15 +114,10 @@ const bulkCreateQr = asyncHandler(async (req, res) => {
       qrImageDataUrl,
       activationLink,
       emergencyLink,
-
-      // Main QR lifecycle status
       status: 'inactive',
-
-      // Warranty is mandatory, emergency is optional
       warrantyStatus: 'pending',
       emergencyStatus: 'inactive',
       ownerMobile: '',
-
       createdBy: req.admin._id
     });
 
@@ -178,14 +154,11 @@ const getDashboard = asyncHandler(async (req, res) => {
     activeQrs,
     inactiveQrs,
     blockedQrs,
-
     warrantyPending,
     warrantyRegistered,
-
     emergencyInactive,
     emergencyActive,
     emergencySkipped,
-
     totalCustomers,
     totalScans,
     totalAlerts,
@@ -214,14 +187,11 @@ const getDashboard = asyncHandler(async (req, res) => {
     activeQrs,
     inactiveQrs,
     blockedQrs,
-
     warrantyPending,
     warrantyRegistered,
-
     emergencyInactive,
     emergencyActive,
     emergencySkipped,
-
     totalCustomers,
     totalScans,
     totalAlerts,
@@ -353,12 +323,6 @@ const updateQr = asyncHandler(async (req, res) => {
     });
   }
 
-  /*
-    This updates only QR-level data.
-
-    Warranty details should be managed in Warranty module.
-    Emergency profile details should be managed in Customer/EmergencyContact module.
-  */
   const allowedFields = [
     'status',
     'previousStatus',
@@ -386,6 +350,145 @@ const updateQr = asyncHandler(async (req, res) => {
   res.json({
     message: 'QR updated successfully',
     data: qr
+  });
+});
+
+const updateQrDetails = asyncHandler(async (req, res) => {
+  const qr = await QrCodeModel.findById(req.params.id);
+
+  if (!qr) {
+    return res.status(404).json({
+      message: 'QR not found'
+    });
+  }
+
+  const {
+    customerName,
+    mobileNumber,
+    email = '',
+    bloodGroup = '',
+    disease = '',
+    address = '',
+    vehicleName = '',
+    chassisNumber = '',
+    motorNumber = '',
+    showroomName = '',
+    contacts = []
+  } = req.body;
+
+  if (!customerName || !mobileNumber) {
+    return res.status(400).json({
+      message: 'Customer name and mobile number are required'
+    });
+  }
+
+  if (!/^[0-9]{10}$/.test(String(mobileNumber))) {
+    return res.status(400).json({
+      message: 'Mobile number must be 10 digits'
+    });
+  }
+
+  if (!Array.isArray(contacts) || contacts.length !== 3) {
+    return res.status(400).json({
+      message: 'Exactly 3 emergency contacts are required'
+    });
+  }
+
+  for (const contact of contacts) {
+    if (!contact.name || !contact.mobile || !contact.relation) {
+      return res.status(400).json({
+        message: 'Each emergency contact must have name, mobile and relation'
+      });
+    }
+
+    if (!/^[0-9]{10}$/.test(String(contact.mobile))) {
+      return res.status(400).json({
+        message: 'Each emergency contact mobile must be 10 digits'
+      });
+    }
+  }
+
+  const customerPayload = {
+    qrId: qr.qrId,
+    customerName: String(customerName).trim(),
+    mobileNumber: String(mobileNumber).trim(),
+    email: String(email || '').trim(),
+    bloodGroup: String(bloodGroup || '').trim(),
+    disease: String(disease || '').trim(),
+    address: String(address || '').trim(),
+    vehicleName: String(vehicleName || '').trim(),
+    chassisNumber: String(chassisNumber || '').trim().toUpperCase(),
+    motorNumber: String(motorNumber || '').trim().toUpperCase(),
+    showroomName: String(showroomName || '').trim(),
+    otpVerified: true,
+    isActive: true
+  };
+
+  let customer = await Customer.findOne({ qrId: qr.qrId });
+
+  if (!customer) {
+    customer = await Customer.create(customerPayload);
+  } else {
+    Object.assign(customer, customerPayload);
+    await customer.save();
+  }
+
+  const cleanedContacts = contacts.map((contact) => ({
+    name: String(contact.name || '').trim(),
+    mobile: String(contact.mobile || '').trim(),
+    email: String(contact.email || '').trim(),
+    relation: String(contact.relation || '').trim()
+  }));
+
+  await EmergencyContact.findOneAndUpdate(
+    { qrId: qr.qrId },
+    {
+      qrId: qr.qrId,
+      contacts: cleanedContacts
+    },
+    {
+      upsert: true,
+      new: true
+    }
+  );
+
+  qr.ownerMobile = String(mobileNumber).trim();
+
+  if (qr.status !== 'blocked') {
+    qr.status = 'active';
+  }
+
+  qr.emergencyStatus = 'active';
+
+  if (!qr.emergencyActivatedAt) {
+    qr.emergencyActivatedAt = new Date();
+  }
+
+  await qr.save();
+
+  await AuditLog.create({
+    adminId: req.admin._id,
+    action: 'UPDATE_QR_DETAILS',
+    qrId: qr.qrId,
+    details: {
+      customerName: customerPayload.customerName,
+      mobileNumber: customerPayload.mobileNumber,
+      vehicleName: customerPayload.vehicleName,
+      chassisNumber: customerPayload.chassisNumber,
+      motorNumber: customerPayload.motorNumber,
+      showroomName: customerPayload.showroomName,
+      contactsCount: cleanedContacts.length
+    }
+  });
+
+  res.json({
+    success: true,
+    message: 'QR details updated successfully',
+    data: {
+      qr,
+      customer,
+      contacts: cleanedContacts
+    }
   });
 });
 
@@ -468,11 +571,6 @@ const resetQr = asyncHandler(async (req, res) => {
     });
   }
 
-  /*
-    Reset removes only optional emergency data.
-
-    Warranty registration is mandatory business data, so reset should not delete warranty data.
-  */
   await Customer.deleteOne({ qrId: qr.qrId });
   await EmergencyContact.deleteOne({ qrId: qr.qrId });
 
@@ -480,6 +578,7 @@ const resetQr = asyncHandler(async (req, res) => {
   qr.emergencyStatus = 'inactive';
   qr.blockedReason = '';
   qr.previousStatus = '';
+  qr.ownerMobile = '';
   await qr.save();
 
   await AuditLog.create({
@@ -591,6 +690,7 @@ module.exports = {
   listQrs,
   getQrById,
   updateQr,
+  updateQrDetails,
   blockQr,
   unblockQr,
   resetQr,

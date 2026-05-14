@@ -1,39 +1,72 @@
 <div class="page">
-  <div class="header">
-    <h1>QR Management</h1>
+  <div class="topbar">
+    <div class="brand">
+      <img src="/assets/logo.webp" alt="Tunwal E-Motors Logo" class="logo" />
+
+      <div>
+        <h1>QR Management</h1>
+        <p>Create single or bulk QR codes for warranty and emergency flow.</p>
+      </div>
+    </div>
+
     <div class="actions">
       <a mat-stroked-button routerLink="/admin/dashboard">Dashboard</a>
       <a mat-stroked-button routerLink="/admin/qr-list">QR List</a>
     </div>
   </div>
 
-  <mat-tab-group>
-
+  <mat-tab-group class="tabs">
     <!-- SINGLE QR -->
     <mat-tab label="Single QR">
       <div class="tab-content">
         <mat-card class="card">
+          <div class="card-head">
+            <div>
+              <h2>Create Single QR</h2>
+              <p>Generate one QR code with unique QR ID.</p>
+            </div>
 
-          <h2>Create Single QR</h2>
-
-          <button mat-raised-button color="primary" (click)="createQr()" [disabled]="loading()">
-            {{ loading() ? 'Creating...' : 'Create QR' }}
-          </button>
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              (click)="createQr()"
+              [disabled]="loading()"
+            >
+              {{ loading() ? 'Creating...' : 'Create QR' }}
+            </button>
+          </div>
 
           <div class="error" *ngIf="error()">{{ error() }}</div>
 
           <div *ngIf="createdQr() as qr" class="result">
-            <h3>{{ qr.qrId }}</h3>
+            <div class="qr-preview">
+              <img [src]="qr.qrImageDataUrl" alt="QR Code" />
 
-            <img [src]="qr.qrImageDataUrl" />
+              <div class="qr-id-under-image">
+                <span>QR ID</span>
+                <strong>{{ qr.qrId }}</strong>
+              </div>
+            </div>
 
-            <p class="link">{{ qr.activationLink }}</p>
+            <div class="qr-details">
+              <div>
+                <span>QR ID</span>
+                <strong>{{ qr.qrId }}</strong>
+              </div>
 
-            <button mat-raised-button color="accent" (click)="downloadQr()">
-              Download QR
-            </button>
+              <div>
+                <span>Activation Link</span>
+                <p>{{ qr.activationLink }}</p>
+              </div>
+            </div>
+
+            <div class="result-actions">
+              <button mat-raised-button color="accent" type="button" (click)="downloadQr()">
+                Download QR
+              </button>
+            </div>
           </div>
-
         </mat-card>
       </div>
     </mat-tab>
@@ -42,50 +75,68 @@
     <mat-tab label="Bulk QR">
       <div class="tab-content">
         <mat-card class="card">
-
-          <h2>Bulk QR Generator</h2>
+          <div class="card-head">
+            <div>
+              <h2>Bulk QR Generator</h2>
+              <p>Generate multiple QR codes for sticker printing.</p>
+            </div>
+          </div>
 
           <div class="bulk-toolbar">
-            <input
-              type="number"
-              [(ngModel)]="bulkCount"
-              min="1"
-              max="500"
-              placeholder="Enter quantity"
-            />
+            <div class="input-group">
+              <label>Quantity</label>
+              <input
+                type="number"
+                [(ngModel)]="bulkCount"
+                min="1"
+                max="100"
+                placeholder="Enter quantity"
+              />
+              <small>Recommended limit: 100 QR codes at a time</small>
+            </div>
 
-            <button mat-raised-button color="primary" (click)="createBulk()" [disabled]="bulkLoading()">
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              (click)="createBulk()"
+              [disabled]="bulkLoading()"
+            >
               {{ bulkLoading() ? 'Generating...' : 'Generate' }}
             </button>
           </div>
 
-          <!-- LOADER -->
           <div *ngIf="bulkLoading()" class="progress-box">
-            <p>Generating QRs... please wait</p>
+            <p>Generating QRs, please wait...</p>
             <mat-progress-bar mode="indeterminate"></mat-progress-bar>
           </div>
 
           <div class="bulk-summary" *ngIf="bulkResult().length">
-            {{ bulkResult().length }} QR codes generated
+            <strong>{{ bulkResult().length }}</strong> QR codes generated successfully.
+          </div>
+
+          <div class="bulk-actions" *ngIf="bulkResult().length">
+            <button mat-raised-button color="accent" type="button" (click)="downloadZip()">
+              Download ZIP
+            </button>
+
+            <button mat-raised-button color="primary" type="button" (click)="downloadCSV()">
+              Export CSV
+            </button>
+
+            <button mat-raised-button color="warn" type="button" (click)="printSheet()">
+              Print Sheet
+            </button>
           </div>
 
           <div class="bulk-grid" *ngIf="bulkResult().length">
             <div class="qr-card" *ngFor="let qr of bulkResult()">
-              <img [src]="qr.qrImageDataUrl" />
+              <img [src]="qr.qrImageDataUrl" alt="QR Code" />
               <p>{{ qr.qrId }}</p>
             </div>
           </div>
-
-          <!-- ACTION BUTTONS -->
-          <div class="bulk-actions" *ngIf="bulkResult().length">
-            <button mat-raised-button color="accent" (click)="downloadZip()">Download ZIP</button>
-            <button mat-raised-button color="primary" (click)="downloadCSV()">Export CSV</button>
-            <button mat-raised-button color="warn" (click)="printSheet()">Print Sheet</button>
-          </div>
-
         </mat-card>
       </div>
     </mat-tab>
-
   </mat-tab-group>
 </div>

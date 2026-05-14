@@ -7,13 +7,15 @@ const warrantySchema = new mongoose.Schema(
       required: true,
       unique: true,
       uppercase: true,
-      trim: true
+      trim: true,
+      index: true
     },
 
     scooterName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      index: true
     },
 
     scooterColor: {
@@ -26,14 +28,16 @@ const warrantySchema = new mongoose.Schema(
       type: String,
       required: true,
       uppercase: true,
-      trim: true
+      trim: true,
+      index: true
     },
 
     batteryNumber: {
       type: String,
       required: true,
       uppercase: true,
-      trim: true
+      trim: true,
+      index: true
     },
 
     motorNumber: {
@@ -41,7 +45,8 @@ const warrantySchema = new mongoose.Schema(
       required: true,
       unique: true,
       uppercase: true,
-      trim: true
+      trim: true,
+      index: true
     },
 
     chassisNumber: {
@@ -49,37 +54,43 @@ const warrantySchema = new mongoose.Schema(
       required: true,
       unique: true,
       uppercase: true,
-      trim: true
+      trim: true,
+      index: true
     },
 
     chargerNumber: {
       type: String,
       required: true,
       uppercase: true,
-      trim: true
+      trim: true,
+      index: true
     },
 
     dealerName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      index: true
     },
 
     customerName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      index: true
     },
 
     contactNumber: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      index: true
     },
 
     dateOfSale: {
       type: Date,
-      required: true
+      required: true,
+      index: true
     },
 
     dealerAddress: {
@@ -91,10 +102,27 @@ const warrantySchema = new mongoose.Schema(
     state: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      index: true
     }
   },
   { timestamps: true }
 );
+
+/*
+  Performance indexes for admin warranty management.
+  These help with:
+  - QR search
+  - Customer/contact search
+  - Chassis/motor lookup
+  - Dealer/state filter
+  - Date-wise/month-wise Excel download
+*/
+
+warrantySchema.index({ createdAt: -1 });
+warrantySchema.index({ dateOfSale: -1 });
+warrantySchema.index({ state: 1, createdAt: -1 });
+warrantySchema.index({ dealerName: 1, createdAt: -1 });
+warrantySchema.index({ customerName: 1, contactNumber: 1 });
 
 module.exports = mongoose.model('Warranty', warrantySchema);

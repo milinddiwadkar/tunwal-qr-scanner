@@ -13,7 +13,7 @@
   margin-bottom: 20px;
 }
 
-.badge {
+/* .badge {
   display: inline-block;
   background: #e8f5f3;
   color: #08756f;
@@ -22,7 +22,7 @@
   border-radius: 999px;
   font-size: 13px;
   font-weight: 800;
-}
+} */
 
 .page-header h1 {
   margin: 12px 0 8px;
@@ -53,19 +53,19 @@
 
 .back-btn {
   border: 1px solid #cbd5e1;
-  background: #ffffff;
-  color: #0f172a;
+  background: #120000;
+  color: #fbfcfc;
 }
 
 .print-btn {
   border: 0;
-  background: #075985;
+  background: #060606;
   color: #ffffff;
 }
 
 .edit-btn {
   border: 0;
-  background: #08756f;
+  background: #080808;
   color: #ffffff;
 }
 

@@ -40,7 +40,7 @@ export class EmergencyComponent implements OnInit {
       next: res => {
         this.data.set(res);
         this.loading.set(false);
-        this.alertMessage.set(`An Emergency Alert has been sent to ${res.owner.customerName}'s contacts`);
+        // this.alertMessage.set(`An Emergency Alert has been sent to ${res.owner.customerName}'s contacts`);
       },
       error: err => {
         this.error.set(err?.error?.message || 'Failed to load emergency data');

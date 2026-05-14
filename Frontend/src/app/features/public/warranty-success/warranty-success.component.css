@@ -1,23 +1,19 @@
 .success-page {
   min-height: 100vh;
   padding: 24px;
-  background:
-    radial-gradient(circle at top right, rgba(15, 118, 110, 0.08), transparent 30%),
-    linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  background: #f5f7fb;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .company-header {
-  max-width: 1120px;
+  max-width: 760px;
   margin: 0 auto 22px;
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 22px;
   padding: 18px 22px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 18px;
   box-shadow: 0 14px 35px rgba(15, 23, 42, 0.06);
 }
 
@@ -41,58 +37,40 @@
   margin: 0;
   color: #0f172a;
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .company-left p {
   margin: 4px 0 0;
-  color: #64748b;
+  color: #08756f;
   font-size: 14px;
-}
-
-.company-right {
-  background: #ecfeff;
-  color: #0f766e;
-  border: 1px solid #ccfbf1;
-  border-radius: 999px;
-  padding: 8px 14px;
-  font-size: 13px;
   font-weight: 800;
-  white-space: nowrap;
 }
 
 .success-shell {
-  max-width: 1120px;
+  max-width: 760px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
-  gap: 24px;
-  align-items: start;
-}
-
-.success-card,
-.info-card {
-  background: #ffffff;
-  border-radius: 28px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
 }
 
 .success-card {
-  padding: 38px;
+  background: #ffffff;
+  border-radius: 24px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+  padding: 36px;
   text-align: center;
 }
 
 .success-icon {
-  width: 72px;
-  height: 72px;
+  width: 70px;
+  height: 70px;
   margin: 0 auto 18px;
   border-radius: 50%;
   background: #ecfdf5;
   color: #047857;
   display: grid;
   place-items: center;
-  font-size: 2.3rem;
+  font-size: 36px;
   font-weight: 900;
   border: 1px solid #a7f3d0;
 }
@@ -106,25 +84,25 @@
   padding: 6px 12px;
   border-radius: 999px;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .success-card h1 {
   margin: 0 0 12px;
   color: #0f172a;
-  font-size: 32px;
+  font-size: 31px;
   line-height: 1.2;
 }
 
 .main-text {
-  max-width: 680px;
+  max-width: 640px;
   margin: 0 auto 22px;
   color: #64748b;
   line-height: 1.7;
 }
 
 .qr-summary {
-  max-width: 440px;
+  max-width: 460px;
   margin: 0 auto 24px;
   padding: 14px 16px;
   border-radius: 16px;
@@ -137,6 +115,7 @@
 
 .qr-summary span {
   color: #64748b;
+  font-weight: 700;
 }
 
 .qr-summary strong {
@@ -146,32 +125,19 @@
 }
 
 .next-box {
-  margin: 0 auto 26px;
-  max-width: 720px;
+  max-width: 620px;
+  margin: 0 auto 24px;
   padding: 18px;
-  border-radius: 20px;
+  border-radius: 18px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  display: flex;
-  gap: 16px;
   text-align: left;
-}
-
-.next-icon {
-  width: 48px;
-  height: 48px;
-  min-width: 48px;
-  border-radius: 14px;
-  background: #ecfeff;
-  border: 1px solid #ccfbf1;
-  display: grid;
-  place-items: center;
-  font-size: 24px;
 }
 
 .next-box h3 {
   margin: 0 0 8px;
   color: #0f172a;
+  font-size: 20px;
 }
 
 .next-box p {
@@ -191,15 +157,15 @@
 .secondary-action {
   min-height: 46px;
   border-radius: 12px;
-  font-weight: 800;
+  font-weight: 900;
   padding: 0 24px;
 }
 
 .final-box {
-  margin: 26px auto 0;
+  margin: 24px auto 0;
   max-width: 620px;
-  padding: 24px;
-  border-radius: 22px;
+  padding: 22px;
+  border-radius: 20px;
   background: #ecfdf5;
   border: 1px solid #a7f3d0;
   text-align: center;
@@ -214,7 +180,7 @@
   color: #047857;
   display: grid;
   place-items: center;
-  font-size: 1.8rem;
+  font-size: 28px;
   font-weight: 900;
 }
 
@@ -230,9 +196,21 @@
   line-height: 1.6;
 }
 
+.privacy-note {
+  margin: 22px auto 0;
+  max-width: 620px;
+  padding: 13px 15px;
+  border-radius: 14px;
+  background: #fffbea;
+  border: 1px solid #fde68a;
+  color: #7c4a03;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
 .message {
-  margin: 20px auto 0;
-  max-width: 680px;
+  margin: 18px auto 0;
+  max-width: 620px;
   padding: 14px 16px;
   border-radius: 14px;
   font-weight: 700;
@@ -251,64 +229,17 @@
   border: 1px solid #fecaca;
 }
 
-.info-card {
-  padding: 26px;
-}
-
-.info-card h3 {
-  margin: 0 0 18px;
-  color: #0f172a;
-  font-size: 22px;
-}
-
-.info-step {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.info-step span {
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  border-radius: 50%;
-  background: #08756f;
-  color: white;
-  display: grid;
-  place-items: center;
-  font-weight: 800;
-}
-
-.info-step p {
-  margin: 4px 0 0;
-  color: #475569;
-  line-height: 1.5;
-}
-
-.privacy-note {
-  margin-top: 20px;
-  padding: 14px 16px;
-  border-radius: 16px;
-  background: #fffbea;
-  border: 1px solid #fde68a;
-  color: #7c4a03;
-  line-height: 1.5;
-  font-weight: 600;
-}
-
-@media (max-width: 900px) {
+@media (max-width: 700px) {
   .success-page {
     padding: 16px;
   }
 
   .company-header {
-    flex-direction: column;
-    align-items: flex-start;
     padding: 16px;
   }
 
-  .company-right {
-    white-space: normal;
+  .company-left {
+    align-items: flex-start;
   }
 
   .company-logo {
@@ -316,29 +247,17 @@
     height: 54px;
   }
 
-  .success-shell {
-    grid-template-columns: 1fr;
+  .company-left h2 {
+    font-size: 20px;
   }
 
   .success-card {
     padding: 26px 18px;
+    border-radius: 20px;
   }
 
   .success-card h1 {
     font-size: 25px;
-  }
-
-  .next-box {
-    flex-direction: column;
-  }
-
-  .choice-grid {
-    flex-direction: column;
-  }
-
-  .primary-action,
-  .secondary-action {
-    width: 100%;
   }
 
   .qr-summary {
@@ -348,5 +267,14 @@
 
   .qr-summary strong {
     text-align: left;
+  }
+
+  .choice-grid {
+    flex-direction: column;
+  }
+
+  .primary-action,
+  .secondary-action {
+    width: 100%;
   }
 }

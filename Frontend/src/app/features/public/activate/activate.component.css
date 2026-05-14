@@ -3,41 +3,75 @@
   display: grid;
   place-items: center;
   padding: 24px;
-  background:
-    radial-gradient(circle at top right, rgba(15, 118, 110, 0.08), transparent 28%),
-    linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  background: #f5f7fb;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .activate-card {
   width: min(560px, 100%);
-  border-radius: 24px;
-  padding: 28px;
+  border-radius: 22px;
+  padding: 30px;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.1);
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+  background: #ffffff;
   font-family: inherit;
+}
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 22px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.brand-logo {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 6px;
+}
+
+.brand-header h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 23px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.brand-header p {
+  margin: 4px 0 0;
+  color: #08756f;
+  font-size: 14px;
+  font-weight: 800;
 }
 
 .center-state {
   text-align: center;
-  padding: 22px 0;
+  padding: 20px 0 8px;
 }
 
 .spinner {
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   margin: 0 auto 18px;
   border-radius: 50%;
   border: 5px solid #ccfbf1;
-  border-top-color: #0f766e;
+  border-top-color: #08756f;
   animation: spin 0.8s linear infinite;
 }
 
 .center-state h2,
 .header h2 {
   margin: 0 0 8px;
-  color: #0f172a;
-  font-size: 1.5rem;
+  color: #172033;
+  font-size: 26px;
+  line-height: 1.2;
 }
 
 .center-state p,
@@ -45,36 +79,37 @@
   margin: 0;
   color: #64748b;
   line-height: 1.6;
+  font-size: 15px;
 }
 
 .header {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .tag {
   display: inline-block;
   margin-bottom: 12px;
-  padding: 6px 10px;
+  padding: 6px 11px;
   border-radius: 999px;
-  background: #ecfeff;
-  color: #0f766e;
-  border: 1px solid #ccfbf1;
-  font-size: 0.78rem;
-  font-weight: 700;
+  background: #e8f5f3;
+  color: #08756f;
+  border: 1px solid #bfe7e2;
+  font-size: 12px;
+  font-weight: 900;
 }
 
 .status-box {
   display: grid;
   gap: 12px;
-  margin-bottom: 22px;
+  margin-bottom: 24px;
 }
 
 .status-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
+  gap: 14px;
+  padding: 13px 15px;
   border-radius: 14px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
@@ -82,13 +117,15 @@
 
 .status-row span {
   color: #64748b;
-  font-size: 0.92rem;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .status-row strong {
   color: #0f172a;
   text-transform: capitalize;
   text-align: right;
+  word-break: break-word;
 }
 
 .full {
@@ -97,9 +134,9 @@
 }
 
 .submit-btn {
-  min-height: 44px;
-  border-radius: 12px;
-  font-weight: 700;
+  min-height: 46px;
+  border-radius: 13px;
+  font-weight: 900;
 }
 
 .error-box {
@@ -108,19 +145,24 @@
   background: #fef2f2;
   border: 1px solid #fecaca;
   color: #991b1b;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.5;
 }
 
 .privacy-note {
   margin-top: 18px;
-  padding: 14px;
+  padding: 14px 15px;
   border-radius: 14px;
-  background: #fefce8;
+  background: #fffbea;
   border: 1px solid #fde68a;
-  color: #854d0e;
-  font-size: 0.92rem;
+  color: #7c4a03;
+  font-size: 14px;
   line-height: 1.5;
+  font-weight: 600;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  border-radius: 13px;
 }
 
 @keyframes spin {
@@ -136,7 +178,27 @@
 
   .activate-card {
     padding: 22px;
-    border-radius: 20px;
+    border-radius: 18px;
+  }
+
+  .brand-header {
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 18px;
+  }
+
+  .brand-logo {
+    width: 56px;
+    height: 56px;
+  }
+
+  .brand-header h1 {
+    font-size: 20px;
+  }
+
+  .header h2,
+  .center-state h2 {
+    font-size: 23px;
   }
 
   .status-row {

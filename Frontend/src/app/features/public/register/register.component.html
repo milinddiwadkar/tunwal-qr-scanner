@@ -2,9 +2,16 @@
   <div class="register-shell">
     <mat-card class="register-card">
       <div class="brand-header">
+        <div class="brand-logo-wrap">
+          <img src="/assets/logo.webp" alt="Tunwal E-Motors Logo" class="brand-logo" />
+        </div>
+
         <div class="brand-text">
-          <h1>Emergency QR Registration</h1>
-          <p>Complete the owner, vehicle, and emergency details to activate your scooter QR.</p>
+          <h1>Emergency QR Profile Activation</h1>
+          <p>
+            Warranty details are already verified. Add only emergency-specific
+            information to activate the safety profile.
+          </p>
         </div>
       </div>
 
@@ -13,224 +20,257 @@
           <span class="meta-label">QR ID</span>
           <strong>{{ qrId }}</strong>
         </div>
+
         <div class="meta-box">
           <span class="meta-label">Verified Mobile</span>
           <strong>{{ maskedMobileNumber || 'Not found' }}</strong>
         </div>
       </div>
 
-      <div class="progress-wrap">
-        <div class="progress-track">
-          <div
-            class="progress-fill"
-            [class.step-1]="currentStep() === 1"
-            [class.step-2]="currentStep() === 2"
-            [class.step-3]="currentStep() === 3"
-          ></div>
-        </div>
-
-        <div class="progress-steps">
-          <button
-            type="button"
-            class="step-pill"
-            [class.active]="currentStep() === 1"
-            [class.done]="currentStep() > 1"
-            (click)="goToStep(1)"
-          >
-            <span class="step-num">1</span>
-            <span class="step-text">Customer Info</span>
-          </button>
-
-          <button
-            type="button"
-            class="step-pill"
-            [class.active]="currentStep() === 2"
-            [class.done]="currentStep() > 2"
-            (click)="goToStep(2)"
-          >
-            <span class="step-num">2</span>
-            <span class="step-text">Vehicle Info</span>
-          </button>
-
-          <button
-            type="button"
-            class="step-pill"
-            [class.active]="currentStep() === 3"
-            (click)="goToStep(3)"
-          >
-            <span class="step-num">3</span>
-            <span class="step-text">Emergency Contacts</span>
-          </button>
-        </div>
+      <div class="loading-box" *ngIf="loadingWarranty()">
+        Loading verified warranty details...
       </div>
 
-      <form [formGroup]="form">
-        <div class="error-box" *ngIf="error()">{{ error() }}</div>
-        <div class="success-box" *ngIf="success()">{{ success() }}</div>
+      <div class="error-box" *ngIf="error()">
+        {{ error() }}
+      </div>
 
-        <!-- STEP 1 -->
-        <div class="section-card" *ngIf="currentStep() === 1">
-          <div class="section-title">
-            <h3>Customer Information</h3>
-            <p>Owner and medical details used during emergency access.</p>
+      <div class="success-box" *ngIf="success()">
+        {{ success() }}
+      </div>
+
+      <ng-container *ngIf="!loadingWarranty()">
+        <div class="progress-wrap">
+          <div class="progress-track">
+            <div
+              class="progress-fill"
+              [class.step-1]="currentStep() === 1"
+              [class.step-2]="currentStep() === 2"
+              [class.step-3]="currentStep() === 3"
+            ></div>
           </div>
 
-          <div class="form-grid">
-            <mat-form-field appearance="outline" class="full">
-              <mat-label>Customer Name</mat-label>
-              <input matInput formControlName="customerName" />
-            </mat-form-field>
+          <div class="progress-steps">
+            <button
+              type="button"
+              class="step-pill"
+              [class.active]="currentStep() === 1"
+              [class.done]="currentStep() > 1"
+              (click)="goToStep(1)"
+            >
+              <span class="step-num">1</span>
+              <span class="step-text">Verified Details</span>
+            </button>
 
-            
+            <button
+              type="button"
+              class="step-pill"
+              [class.active]="currentStep() === 2"
+              [class.done]="currentStep() > 2"
+              (click)="goToStep(2)"
+            >
+              <span class="step-num">2</span>
+              <span class="step-text">Medical Details</span>
+            </button>
 
-            <mat-form-field appearance="outline" class="full">
-              <mat-label>Email</mat-label>
-              <input matInput formControlName="email" />
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="full">
-              <mat-label>Blood Group</mat-label>
-              <mat-select formControlName="bloodGroup">
-                <mat-option *ngFor="let bg of bloodGroups" [value]="bg">{{ bg }}</mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="full">
-              <mat-label>Disease / Medical Condition</mat-label>
-              <input matInput formControlName="disease" />
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="full full-width">
-              <mat-label>Address</mat-label>
-              <textarea matInput rows="3" formControlName="address"></textarea>
-            </mat-form-field>
-          </div>
-
-          <div class="card-actions end">
-            <button mat-raised-button color="primary" type="button" (click)="nextStep()">
-              Next
+            <button
+              type="button"
+              class="step-pill"
+              [class.active]="currentStep() === 3"
+              (click)="goToStep(3)"
+            >
+              <span class="step-num">3</span>
+              <span class="step-text">Emergency Contacts</span>
             </button>
           </div>
         </div>
 
-        <!-- STEP 2 -->
-        <div class="section-card" *ngIf="currentStep() === 2">
-          <div class="section-title">
-            <h3>Vehicle Information</h3>
-            <p>Enter scooter identification and showroom details.</p>
-          </div>
+        <form [formGroup]="form">
+          <!-- STEP 1 -->
+          <div class="section-card" *ngIf="currentStep() === 1">
+            <div class="section-title">
+              <h3>Verified Warranty Details</h3>
+              <p>
+                These details are auto-filled from warranty registration and cannot be changed here.
+              </p>
+            </div>
 
-          <div class="form-grid">
-            <mat-form-field appearance="outline" class="full">
-              <mat-label>Vehicle Name</mat-label>
-              <input matInput formControlName="vehicleName" />
-            </mat-form-field>
+            <div class="form-grid">
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Customer Name</mat-label>
+                <input matInput formControlName="customerName" readonly />
+              </mat-form-field>
 
-            <mat-form-field appearance="outline" class="full">
-              <mat-label>Chassis Number</mat-label>
-              <input matInput formControlName="chassisNumber" />
-            </mat-form-field>
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Mobile Number</mat-label>
+                <input matInput formControlName="mobileNumber" readonly />
+              </mat-form-field>
 
-            <mat-form-field appearance="outline" class="full">
-              <mat-label>Motor Number</mat-label>
-              <input matInput formControlName="motorNumber" />
-            </mat-form-field>
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Scooter Name</mat-label>
+                <input matInput formControlName="vehicleName" readonly />
+              </mat-form-field>
 
-            <mat-form-field appearance="outline" class="full">
-              <mat-label>Showroom Name</mat-label>
-              <input matInput formControlName="showroomName" />
-            </mat-form-field>
-          </div>
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Dealer Name</mat-label>
+                <input matInput formControlName="showroomName" readonly />
+              </mat-form-field>
 
-          <div class="card-actions between">
-            <button mat-stroked-button type="button" (click)="previousStep()">Previous</button>
-            <button mat-raised-button color="primary" type="button" (click)="nextStep()">
-              Next
-            </button>
-          </div>
-        </div>
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Chassis Number</mat-label>
+                <input matInput formControlName="chassisNumber" readonly />
+              </mat-form-field>
 
-        <!-- STEP 3 -->
-        <div class="section-card" *ngIf="currentStep() === 3">
-          <div class="section-title">
-            <h3>Emergency Contacts</h3>
-            <p>Add emergency contacts. required 3 contacts.</p>
-          </div>
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Motor Number</mat-label>
+                <input matInput formControlName="motorNumber" readonly />
+              </mat-form-field>
+            </div>
 
-          <div class="contact-toolbar">
-            <span class="contact-note">Current contacts: {{ contacts.length }}</span>
-
-            <div class="contact-tools">
-              <button mat-stroked-button color="primary" type="button" (click)="addContact()">
-                Add Contact
+            <div class="card-actions end">
+              <button mat-raised-button color="primary" type="button" (click)="nextStep()">
+                Next: Medical Details
               </button>
             </div>
           </div>
 
-          <div formArrayName="contacts">
-            <div
-              class="contact-card"
-              *ngFor="let contact of contacts.controls; let i = index"
-              [formGroupName]="i"
-            >
-              <div class="contact-head">
-                <div class="contact-title-block">
-                  <span class="contact-number">{{ i + 1 }}</span>
-                  <div>
-                    <h4>Emergency Contact {{ i + 1 }}</h4>
-                    <p>Primary responder contact</p>
-                  </div>
-                </div>
+          <!-- STEP 2 -->
+          <div class="section-card" *ngIf="currentStep() === 2">
+            <div class="section-title">
+              <h3>Medical & Address Details</h3>
+              <p>
+                This information will be visible on the emergency page when someone scans the QR.
+              </p>
+            </div>
 
-                <button
-                  type="button"
-                  class="remove-contact-btn"
-                  (click)="removeContact(i)"
-                  [disabled]="contacts.length <= 3"
-                  title="Remove contact"
-                >
-                  ×
-                </button>
-              </div>
+            <div class="form-grid">
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" placeholder="Optional email address" />
+              </mat-form-field>
 
-              <div class="form-grid">
-                <mat-form-field appearance="outline" class="full">
-                  <mat-label>Name</mat-label>
-                  <input matInput formControlName="name" />
-                </mat-form-field>
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Blood Group</mat-label>
+                <mat-select formControlName="bloodGroup">
+                  <mat-option value="">Select Blood Group</mat-option>
+                  <mat-option *ngFor="let bg of bloodGroups" [value]="bg">
+                    {{ bg }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full">
-                  <mat-label>Mobile</mat-label>
-                  <input matInput formControlName="mobile" inputmode="numeric" />
-                </mat-form-field>
+              <mat-form-field appearance="outline" class="full full-width">
+                <mat-label>Disease / Medical Condition</mat-label>
+                <textarea
+                  matInput
+                  rows="2"
+                  formControlName="disease"
+                  placeholder="Example: Diabetes, BP, asthma, allergy. Leave blank if none."
+                ></textarea>
+              </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full">
-                  <mat-label>Email</mat-label>
-                  <input matInput formControlName="email" />
-                </mat-form-field>
+              <mat-form-field appearance="outline" class="full full-width">
+                <mat-label>Address</mat-label>
+                <textarea
+                  matInput
+                  rows="3"
+                  formControlName="address"
+                  placeholder="Enter address for emergency reference"
+                ></textarea>
+              </mat-form-field>
+            </div>
 
-                <mat-form-field appearance="outline" class="full">
-                  <mat-label>Relation</mat-label>
-                  <input matInput formControlName="relation" />
-                </mat-form-field>
-              </div>
+            <div class="card-actions between">
+              <button mat-stroked-button type="button" (click)="previousStep()">
+                Previous
+              </button>
+
+              <button mat-raised-button color="primary" type="button" (click)="nextStep()">
+                Next: Emergency Contacts
+              </button>
             </div>
           </div>
 
-          <div class="card-actions between">
-            <button mat-stroked-button type="button" (click)="previousStep()">Previous</button>
-            <button
-              mat-raised-button
-              color="primary"
-              type="button"
-              (click)="submit()"
-              [disabled]="loading()"
-            >
-              {{ loading() ? 'Submitting...' : 'Complete Registration' }}
-            </button>
+          <!-- STEP 3 -->
+          <div class="section-card" *ngIf="currentStep() === 3">
+            <div class="section-title">
+              <h3>Emergency Contacts</h3>
+              <p>
+                Add exactly 3 emergency contacts. These contacts may be alerted during an emergency.
+              </p>
+            </div>
+
+            <div class="contact-toolbar">
+              <span class="contact-note">Required contacts: {{ contacts.length }}/3</span>
+            </div>
+
+            <div formArrayName="contacts">
+              <div
+                class="contact-card"
+                *ngFor="let contact of contacts.controls; let i = index"
+                [formGroupName]="i"
+              >
+                <div class="contact-head">
+                  <div class="contact-title-block">
+                    <span class="contact-number">{{ i + 1 }}</span>
+                    <div>
+                      <h4>Emergency Contact {{ i + 1 }}</h4>
+                      <p>Person to contact during emergency</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-grid">
+                  <mat-form-field appearance="outline" class="full">
+                    <mat-label>Name</mat-label>
+                    <input matInput formControlName="name" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="full">
+                    <mat-label>Mobile Number</mat-label>
+                    <input
+                      matInput
+                      maxlength="10"
+                      formControlName="mobile"
+                      inputmode="numeric"
+                    />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="full">
+                    <mat-label>Email</mat-label>
+                    <input matInput formControlName="email" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="full">
+                    <mat-label>Relation</mat-label>
+                    <input
+                      matInput
+                      formControlName="relation"
+                      placeholder="Father, Mother, Friend..."
+                    />
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-actions between">
+              <button mat-stroked-button type="button" (click)="previousStep()">
+                Previous
+              </button>
+
+              <button
+                mat-raised-button
+                color="primary"
+                type="button"
+                (click)="submit()"
+                [disabled]="loading()"
+              >
+                {{ loading() ? 'Activating...' : 'Activate Emergency Profile' }}
+              </button>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </ng-container>
     </mat-card>
   </div>
 </div>

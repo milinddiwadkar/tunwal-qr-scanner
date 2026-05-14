@@ -1,34 +1,92 @@
 <div class="page">
   <div class="topbar">
-    <h2>QR Details</h2>
+    <div class="brand">
+      <img src="/assets/logo.png" alt="Tunwal E-Motors Logo" class="logo" />
+
+      <div>
+        <span class="badge">Admin Panel</span>
+        <h1>QR Details</h1>
+        <p>View and correct QR, customer, vehicle and emergency profile details.</p>
+      </div>
+    </div>
+
     <div class="actions">
       <a mat-stroked-button routerLink="/admin/qr-list">Back to QR List</a>
       <a mat-stroked-button routerLink="/admin/dashboard">Dashboard</a>
     </div>
   </div>
 
-  <div *ngIf="loading()">Loading QR details...</div>
+  <div class="loading-box" *ngIf="loading()">Loading QR details...</div>
   <div class="error" *ngIf="error()">{{ error() }}</div>
   <div class="success" *ngIf="success()">{{ success() }}</div>
 
-  <div *ngIf="data() as d" class="grid">
-    <mat-card class="card">
-      <h3>QR Information</h3>
+  <ng-container *ngIf="data() as d">
+    <div class="summary-card">
+      <div class="qr-preview">
+        <img
+          *ngIf="d.qr?.qrImageDataUrl"
+          [src]="d.qr.qrImageDataUrl"
+          [alt]="d.qr.qrId"
+          class="qr-image"
+        />
 
-      <img *ngIf="d.qr?.qrImageDataUrl" [src]="d.qr.qrImageDataUrl" [alt]="d.qr.qrId" class="qr-image" />
+        <div class="qr-id-box">
+          <span>QR ID</span>
+          <strong>{{ d.qr?.qrId }}</strong>
+        </div>
+      </div>
 
-      <p><strong>QR ID:</strong> {{ d.qr?.qrId }}</p>
-      <p><strong>Status:</strong> {{ d.qr?.status }}</p>
-      <p><strong>Blocked Reason:</strong> {{ d.qr?.blockedReason || 'N/A' }}</p>
-      <p><strong>Created:</strong> {{ d.qr?.createdAt | date:'medium' }}</p>
-      <p><strong>Updated:</strong> {{ d.qr?.updatedAt | date:'medium' }}</p>
+      <div class="qr-meta">
+        <div>
+          <span>Status</span>
+          <strong class="status-pill" [ngClass]="getStatusClass(d.qr?.status)">
+            {{ d.qr?.status || '—' }}
+          </strong>
+        </div>
 
-      <div class="action-buttons">
+        <div>
+          <span>Warranty Status</span>
+          <strong>{{ d.qr?.warrantyStatus || 'pending' }}</strong>
+        </div>
+
+        <div>
+          <span>Emergency Status</span>
+          <strong>{{ d.qr?.emergencyStatus || 'inactive' }}</strong>
+        </div>
+
+        <div>
+          <span>Created</span>
+          <strong>{{ d.qr?.createdAt | date:'dd-MM-yyyy, h:mm a' }}</strong>
+        </div>
+
+        <div>
+          <span>Updated</span>
+          <strong>{{ d.qr?.updatedAt | date:'dd-MM-yyyy, h:mm a' }}</strong>
+        </div>
+
+        <div>
+          <span>Blocked Reason</span>
+          <strong>{{ d.qr?.blockedReason || 'N/A' }}</strong>
+        </div>
+      </div>
+
+      <div class="summary-actions">
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          *ngIf="!editMode()"
+          (click)="enableEdit()"
+        >
+          Edit Details
+        </button>
+
         <button
           mat-raised-button
           color="warn"
+          type="button"
           *ngIf="d.qr?.status !== 'blocked'"
-          [disabled]="actionLoading()"
+          [disabled]="actionLoading() || editMode()"
           (click)="blockQr()"
         >
           {{ actionLoading() ? 'Please wait...' : 'Block QR' }}
@@ -37,56 +95,159 @@
         <button
           mat-raised-button
           color="primary"
+          type="button"
           *ngIf="d.qr?.status === 'blocked'"
-          [disabled]="actionLoading()"
+          [disabled]="actionLoading() || editMode()"
           (click)="unblockQr()"
         >
           {{ actionLoading() ? 'Please wait...' : 'Unblock QR' }}
         </button>
       </div>
-    </mat-card>
+    </div>
 
-    <mat-card class="card">
-      <h3>Customer Information</h3>
-      <ng-container *ngIf="d.customer; else noCustomer">
-        <p><strong>Name:</strong> {{ d.customer.customerName }}</p>
-        <p><strong>Mobile:</strong> {{ d.customer.mobileNumber }}</p>
-        <p><strong>Email:</strong> {{ d.customer.email || 'N/A' }}</p>
-        <p><strong>Blood Group:</strong> {{ d.customer.bloodGroup || 'N/A' }}</p>
-        <p><strong>Disease:</strong> {{ d.customer.disease || 'N/A' }}</p>
-        <p><strong>Address:</strong> {{ d.customer.address || 'N/A' }}</p>
-      </ng-container>
-      <ng-template #noCustomer>
-        <p>Customer not registered yet.</p>
-      </ng-template>
-    </mat-card>
+    <form [formGroup]="form" *ngIf="editMode(); else viewMode">
+      <div class="edit-grid">
+        <mat-card class="card">
+          <h3>Customer Information</h3>
 
-    <mat-card class="card">
-      <h3>Vehicle Information</h3>
-      <ng-container *ngIf="d.customer; else noVehicle">
-        <p><strong>Vehicle Name:</strong> {{ d.customer.vehicleName || 'N/A' }}</p>
-        <p><strong>Chassis Number:</strong> {{ d.customer.chassisNumber || 'N/A' }}</p>
-        <p><strong>Motor Number:</strong> {{ d.customer.motorNumber || 'N/A' }}</p>
-        <p><strong>Showroom Name:</strong> {{ d.customer.showroomName || 'N/A' }}</p>
-      </ng-container>
-      <ng-template #noVehicle>
-        <p>Vehicle data not available yet.</p>
-      </ng-template>
-    </mat-card>
+          <label>Customer Name</label>
+          <input formControlName="customerName" />
 
-    <mat-card class="card">
-      <h3>Emergency Contacts</h3>
-      <ng-container *ngIf="d.contacts?.contacts?.length; else noContacts">
-        <div *ngFor="let c of d.contacts.contacts" class="contact-box">
-          <p><strong>Name:</strong> {{ c.name }}</p>
-          <p><strong>Mobile:</strong> {{ c.mobile }}</p>
-          <p><strong>Email:</strong> {{ c.email || 'N/A' }}</p>
-          <p><strong>Relation:</strong> {{ c.relation }}</p>
-        </div>
-      </ng-container>
-      <ng-template #noContacts>
-        <p>No emergency contacts found.</p>
-      </ng-template>
-    </mat-card>
-  </div>
+          <label>Mobile Number</label>
+          <input maxlength="10" formControlName="mobileNumber" />
+
+          <label>Email</label>
+          <input formControlName="email" />
+
+          <label>Blood Group</label>
+          <select formControlName="bloodGroup">
+            <option value="">Select Blood Group</option>
+            <option *ngFor="let bg of bloodGroups" [value]="bg">{{ bg }}</option>
+          </select>
+
+          <label>Disease / Medical Condition</label>
+          <input formControlName="disease" />
+
+          <label>Address</label>
+          <textarea rows="3" formControlName="address"></textarea>
+        </mat-card>
+
+        <mat-card class="card">
+          <h3>Vehicle Information</h3>
+
+          <label>Vehicle Name</label>
+          <input formControlName="vehicleName" />
+
+          <label>Chassis Number</label>
+          <input formControlName="chassisNumber" />
+
+          <label>Motor Number</label>
+          <input formControlName="motorNumber" />
+
+          <label>Showroom Name</label>
+          <input formControlName="showroomName" />
+
+          <div class="note-box">
+            QR ID cannot be edited. If QR ID is wrong, create a new QR instead.
+          </div>
+        </mat-card>
+
+        <mat-card class="card contacts-edit-card">
+          <h3>Emergency Contacts</h3>
+
+          <div formArrayName="contacts">
+            <div
+              class="contact-edit-box"
+              *ngFor="let contact of contacts.controls; let i = index"
+              [formGroupName]="i"
+            >
+              <h4>Contact {{ i + 1 }}</h4>
+
+              <label>Name</label>
+              <input formControlName="name" />
+
+              <label>Mobile Number</label>
+              <input maxlength="10" formControlName="mobile" />
+
+              <label>Email</label>
+              <input formControlName="email" />
+
+              <label>Relation</label>
+              <input formControlName="relation" />
+            </div>
+          </div>
+        </mat-card>
+      </div>
+
+      <div class="edit-actions">
+        <button mat-stroked-button type="button" (click)="cancelEdit()">
+          Cancel
+        </button>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="saveChanges()"
+          [disabled]="saving()"
+        >
+          {{ saving() ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </div>
+    </form>
+
+    <ng-template #viewMode>
+      <div class="grid">
+        <mat-card class="card">
+          <h3>Customer Information</h3>
+
+          <ng-container *ngIf="d.customer; else noCustomer">
+            <div class="info-row"><span>Name</span><strong>{{ d.customer.customerName }}</strong></div>
+            <div class="info-row"><span>Mobile</span><strong>{{ d.customer.mobileNumber }}</strong></div>
+            <div class="info-row"><span>Email</span><strong>{{ d.customer.email || 'N/A' }}</strong></div>
+            <div class="info-row"><span>Blood Group</span><strong>{{ d.customer.bloodGroup || 'N/A' }}</strong></div>
+            <div class="info-row"><span>Disease</span><strong>{{ d.customer.disease || 'N/A' }}</strong></div>
+            <div class="info-row"><span>Address</span><strong>{{ d.customer.address || 'N/A' }}</strong></div>
+          </ng-container>
+
+          <ng-template #noCustomer>
+            <p class="empty-text">Customer not registered yet.</p>
+          </ng-template>
+        </mat-card>
+
+        <mat-card class="card">
+          <h3>Vehicle Information</h3>
+
+          <ng-container *ngIf="d.customer; else noVehicle">
+            <div class="info-row"><span>Vehicle Name</span><strong>{{ d.customer.vehicleName || 'N/A' }}</strong></div>
+            <div class="info-row"><span>Chassis Number</span><strong>{{ d.customer.chassisNumber || 'N/A' }}</strong></div>
+            <div class="info-row"><span>Motor Number</span><strong>{{ d.customer.motorNumber || 'N/A' }}</strong></div>
+            <div class="info-row"><span>Showroom Name</span><strong>{{ d.customer.showroomName || 'N/A' }}</strong></div>
+          </ng-container>
+
+          <ng-template #noVehicle>
+            <p class="empty-text">Vehicle data not available yet.</p>
+          </ng-template>
+        </mat-card>
+
+        <mat-card class="card">
+          <h3>Emergency Contacts</h3>
+
+          <ng-container *ngIf="d.contacts?.contacts?.length; else noContacts">
+            <div *ngFor="let c of d.contacts.contacts; let i = index" class="contact-box">
+              <h4>Contact {{ i + 1 }}</h4>
+              <div class="info-row"><span>Name</span><strong>{{ c.name }}</strong></div>
+              <div class="info-row"><span>Mobile</span><strong>{{ c.mobile }}</strong></div>
+              <div class="info-row"><span>Email</span><strong>{{ c.email || 'N/A' }}</strong></div>
+              <div class="info-row"><span>Relation</span><strong>{{ c.relation }}</strong></div>
+            </div>
+          </ng-container>
+
+          <ng-template #noContacts>
+            <p class="empty-text">No emergency contacts found.</p>
+          </ng-template>
+        </mat-card>
+      </div>
+    </ng-template>
+  </ng-container>
 </div>

@@ -1,9 +1,20 @@
 <div class="otp-page">
   <div class="otp-shell">
     <mat-card class="otp-card">
+      <div class="brand-header">
+        <img src="/assets/logo.png" alt="Tunwal E-Motors Logo" class="brand-logo" />
+
+        <div>
+          <h2>Tunwal E-Motors</h2>
+          <p>Emergency QR & Warranty System</p>
+        </div>
+      </div>
+
       <div class="otp-top">
         <span class="step-tag">Step 2: OTP Verification</span>
+
         <h1>Verify OTP</h1>
+
         <p class="subtitle">
           Enter the one-time password sent to your mobile number. After verification,
           you will continue to warranty registration.
@@ -25,6 +36,7 @@
       <form [formGroup]="form">
         <mat-form-field appearance="outline" class="full">
           <mat-label>Enter OTP</mat-label>
+
           <input
             #otpInput
             matInput
@@ -94,7 +106,7 @@
       </form>
 
       <div class="flow-note">
-        Next: Warranty registration is mandatory. Emergency profile activation is optional after warranty.
+        Warranty registration is mandatory. Emergency profile activation is optional after warranty.
       </div>
     </mat-card>
   </div>

@@ -5,8 +5,6 @@ const qrCodeSchema = new mongoose.Schema(
     qrId: {
       type: String,
       required: true,
-      unique: true,
-      index: true,
       uppercase: true,
       trim: true
     },
@@ -45,8 +43,7 @@ const qrCodeSchema = new mongoose.Schema(
         'transferred',
         'scrapped'
       ],
-      default: 'inactive',
-      index: true
+      default: 'inactive'
     },
 
     previousStatus: {
@@ -72,8 +69,7 @@ const qrCodeSchema = new mongoose.Schema(
     warrantyStatus: {
       type: String,
       enum: ['pending', 'registered'],
-      default: 'pending',
-      index: true
+      default: 'pending'
     },
 
     warrantyRegisteredAt: {
@@ -89,8 +85,7 @@ const qrCodeSchema = new mongoose.Schema(
     emergencyStatus: {
       type: String,
       enum: ['inactive', 'active', 'skipped'],
-      default: 'inactive',
-      index: true
+      default: 'inactive'
     },
 
     emergencyActivatedAt: {
@@ -133,5 +128,33 @@ const qrCodeSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+/*
+  Indexes for better performance when multiple users/admins hit APIs.
+  Keep all indexes here.
+  Do not use `index: true` or `unique: true` inside fields if the same index is declared here.
+*/
+
+// Unique QR lookup
+qrCodeSchema.index({ qrId: 1 }, { unique: true });
+
+// Dashboard counts / filters
+qrCodeSchema.index({ status: 1 });
+qrCodeSchema.index({ warrantyStatus: 1 });
+qrCodeSchema.index({ emergencyStatus: 1 });
+
+// Admin lists / latest QR first
+qrCodeSchema.index({ createdAt: -1 });
+
+// Useful combined filters for dashboard/admin list
+qrCodeSchema.index({ warrantyStatus: 1, createdAt: -1 });
+qrCodeSchema.index({ emergencyStatus: 1, createdAt: -1 });
+qrCodeSchema.index({ status: 1, createdAt: -1 });
+
+// Owner lookup if needed later
+qrCodeSchema.index({ ownerMobile: 1 });
+
+// Created by admin tracking
+qrCodeSchema.index({ createdBy: 1, createdAt: -1 });
 
 module.exports = mongoose.model('QrCode', qrCodeSchema);

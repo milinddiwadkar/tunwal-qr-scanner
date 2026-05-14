@@ -1,16 +1,18 @@
 <div class="success-page">
   <header class="company-header">
     <div class="company-left">
-      <img src="/assets/logo.png" alt="Tunwal E-Motors Logo" class="company-logo" />
+      <img
+        src="/assets/logo.webp"
+        alt="Tunwal E-Motors Logo"
+        class="company-logo"
+        width="62"
+        height="62"
+      />
 
       <div>
         <h2>Tunwal E-Motors</h2>
         <p>Official Warranty Registration Portal</p>
       </div>
-    </div>
-
-    <div class="company-right">
-      Emergency QR System
     </div>
   </header>
 
@@ -23,7 +25,7 @@
       <h1>Warranty Registration Completed</h1>
 
       <p class="main-text">
-        Your scooter warranty details have been submitted successfully.
+        Your vehicle warranty details have been submitted successfully.
         Warranty data is private and visible only to authorized admin users.
       </p>
 
@@ -34,16 +36,11 @@
 
       <ng-container *ngIf="!skipped(); else skippedState">
         <div class="next-box">
-          <div class="next-icon">🛡️</div>
-
-          <div>
-            <h3>Emergency Profile is Optional</h3>
-            <p>
-              You can activate Emergency QR Profile for safety assistance.
-              This may include medical details and emergency contact information.
-              This step is not mandatory.
-            </p>
-          </div>
+          <h3>Emergency Profile is Optional</h3>
+          <p>
+            You may activate the Emergency QR Profile for safety assistance.
+            This can include medical details and emergency contacts. This step is not mandatory.
+          </p>
         </div>
 
         <div class="choice-grid">
@@ -94,6 +91,10 @@
         </div>
       </ng-template>
 
+      <div class="privacy-note">
+        Emergency contacts are not required for warranty registration.
+      </div>
+
       <div class="message success-message" *ngIf="message()">
         {{ message() }}
       </div>
@@ -102,28 +103,5 @@
         {{ error() }}
       </div>
     </mat-card>
-
-    <aside class="info-card">
-      <h3>What happens next?</h3>
-
-      <div class="info-step">
-        <span>1</span>
-        <p>Warranty details are saved privately for future claim verification.</p>
-      </div>
-
-      <div class="info-step">
-        <span>2</span>
-        <p>Emergency Profile can be activated only if the customer wants safety assistance.</p>
-      </div>
-
-      <div class="info-step">
-        <span>3</span>
-        <p>If skipped, QR remains valid for warranty records. Emergency profile can be activated later.</p>
-      </div>
-
-      <div class="privacy-note">
-        Emergency contacts are never required for warranty registration.
-      </div>
-    </aside>
   </main>
 </div>

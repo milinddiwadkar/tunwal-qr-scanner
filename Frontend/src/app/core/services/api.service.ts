@@ -11,6 +11,13 @@ import {
   QrStatusResponse
 } from '../../shared/models/api.models';
 
+export interface WarrantyFilterParams {
+  search?: string;
+  startDate?: string;
+  endDate?: string;
+  month?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -127,6 +134,22 @@ export class ApiService {
     }>(`${this.baseUrl}/warranty/register`, payload);
   }
 
+  getWarrantyBasic(qrId: string) {
+    return this.http.get<{
+      success: boolean;
+      data: {
+        qrId: string;
+        customerName: string;
+        mobileNumber: string;
+        vehicleName: string;
+        chassisNumber: string;
+        motorNumber: string;
+        showroomName: string;
+        emergencyStatus: string;
+      };
+    }>(`${this.baseUrl}/warranty/basic/${encodeURIComponent(qrId)}`);
+  }
+
   // -------------------------
   // Public Emergency Flow
   // -------------------------
@@ -175,12 +198,36 @@ export class ApiService {
     return this.http.post(`${this.baseUrl}/public/scan-log`, payload);
   }
 
-    // -------------------------
+  // -------------------------
   // Admin Warranty Management
   // -------------------------
 
-  getWarrantyRecords(search: string = '') {
-    const query = search ? `?search=${encodeURIComponent(search)}` : '';
+  private buildWarrantyQuery(filters?: WarrantyFilterParams): string {
+    const params = new URLSearchParams();
+
+    if (filters?.search?.trim()) {
+      params.set('search', filters.search.trim());
+    }
+
+    if (filters?.startDate) {
+      params.set('startDate', filters.startDate);
+    }
+
+    if (filters?.endDate) {
+      params.set('endDate', filters.endDate);
+    }
+
+    if (filters?.month) {
+      params.set('month', filters.month);
+    }
+
+    const query = params.toString();
+
+    return query ? `?${query}` : '';
+  }
+
+  getWarrantyRecords(filters?: WarrantyFilterParams) {
+    const query = this.buildWarrantyQuery(filters);
 
     return this.http.get<{
       success: boolean;
@@ -204,10 +251,20 @@ export class ApiService {
     }>(`${this.baseUrl}/admin/warranty/${encodeURIComponent(qrId)}`, payload);
   }
 
-  downloadWarrantyExcel() {
-    return this.http.get(`${this.baseUrl}/admin/warranty/export/excel`, {
+  downloadWarrantyExcel(filters?: WarrantyFilterParams) {
+    const query = this.buildWarrantyQuery(filters);
+
+    return this.http.get(`${this.baseUrl}/admin/warranty/export/excel${query}`, {
       responseType: 'blob'
     });
   }
+
+  updateQrDetails(id: string, payload: any) {
+  return this.http.patch<{
+    success: boolean;
+    message: string;
+    data: any;
+  }>(`${this.baseUrl}/admin/qr/${id}/details`, payload);
+}
 
 }

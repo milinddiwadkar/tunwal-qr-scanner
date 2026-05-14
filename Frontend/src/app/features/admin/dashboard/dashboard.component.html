@@ -1,14 +1,38 @@
-<div class="page">
-  <div class="topbar">
+<div class="dashboard-page">
+  <header class="company-header">
+    <div class="company-left">
+      <img src="/assets/logo.webp" alt="Tunwal E-Motors Logo" class="company-logo" />
+
+      <div>
+        <h1>Tunwal E-Motors</h1>
+        <p>Warranty & Emergency QR Admin Panel</p>
+      </div>
+    </div>
+
+    <div class="company-actions">
+      <button mat-stroked-button type="button" (click)="refresh()" [disabled]="loading()">
+        {{ loading() ? 'Refreshing...' : 'Refresh' }}
+      </button>
+
+      <button mat-stroked-button color="warn" type="button" (click)="logout()">
+        Logout
+      </button>
+    </div>
+  </header>
+
+  <section class="hero-card">
     <div>
-      <span class="badge">Admin Panel</span>
-      <h2>Admin Dashboard</h2>
-      <p class="subtitle">
-        Manage QR codes, warranty records, emergency profiles and activity.
+      <span class="badge">Admin Dashboard</span>
+
+      <h2>QR System Overview</h2>
+
+      <p>
+        Manage QR codes, warranty records, emergency profiles, scan activity and alerts
+        from one place.
       </p>
     </div>
 
-    <div class="actions">
+    <div class="hero-actions">
       <a mat-raised-button color="primary" routerLink="/admin/create-qr">
         Create QR
       </a>
@@ -20,96 +44,161 @@
       <a mat-raised-button class="warranty-btn" routerLink="/admin/warranty-records">
         Warranty Records
       </a>
-
-      <button mat-stroked-button color="warn" (click)="logout()">
-        Logout
-      </button>
     </div>
-  </div>
+  </section>
 
   <div class="loading-box" *ngIf="loading()">
     Loading dashboard...
   </div>
 
-  <div class="error" *ngIf="error()">
+  <div class="error-box" *ngIf="error()">
     {{ error() }}
   </div>
 
-  <div class="grid" *ngIf="data() as d">
-    <mat-card class="stat-card primary">
-      <span>Total QRs</span>
-      <p>{{ d.totalQrs }}</p>
-    </mat-card>
+  <ng-container *ngIf="data() as d">
+    <section class="insight-grid">
+      <mat-card class="insight-card">
+        <span>Warranty Completion</span>
+        <strong>{{ warrantyCompletionRate }}%</strong>
 
-    <mat-card class="stat-card success">
-      <span>Active QRs</span>
-      <p>{{ d.activeQrs }}</p>
-    </mat-card>
+        <div class="progress-track">
+          <div class="progress-fill warranty" [style.width.%]="warrantyCompletionRate"></div>
+        </div>
 
-    <mat-card class="stat-card muted">
-      <span>Inactive QRs</span>
-      <p>{{ d.inactiveQrs }}</p>
-    </mat-card>
+        <p>{{ d.warrantyRegistered || 0 }} of {{ d.totalQrs || 0 }} QR records completed</p>
+      </mat-card>
 
-    <mat-card class="stat-card danger">
-      <span>Blocked QRs</span>
-      <p>{{ d.blockedQrs }}</p>
-    </mat-card>
+      <mat-card class="insight-card">
+        <span>Emergency Activation</span>
+        <strong>{{ emergencyActivationRate }}%</strong>
 
-    <mat-card class="stat-card warning">
-      <span>Warranty Pending</span>
-      <p>{{ d.warrantyPending || 0 }}</p>
-    </mat-card>
+        <div class="progress-track">
+          <div class="progress-fill emergency" [style.width.%]="emergencyActivationRate"></div>
+        </div>
 
-    <mat-card class="stat-card success">
-      <span>Warranty Registered</span>
-      <p>{{ d.warrantyRegistered || 0 }}</p>
-    </mat-card>
+        <p>{{ d.emergencyActive || 0 }} active emergency profiles</p>
+      </mat-card>
 
-    <mat-card class="stat-card primary">
-      <span>Emergency Active</span>
-      <p>{{ d.emergencyActive || 0 }}</p>
-    </mat-card>
+      <mat-card class="insight-card">
+        <span>System Activity</span>
+        <strong>{{ d.totalScans || 0 }}</strong>
+        <p>Total QR scans recorded across the system</p>
+      </mat-card>
+    </section>
 
-    <mat-card class="stat-card muted">
-      <span>Emergency Skipped</span>
-      <p>{{ d.emergencySkipped || 0 }}</p>
-    </mat-card>
+    <section class="stat-section">
+      <div class="section-heading">
+        <h3>QR Status</h3>
+        <p>Track QR creation and lifecycle status.</p>
+      </div>
 
-    <mat-card class="stat-card">
-      <span>Total Customers</span>
-      <p>{{ d.totalCustomers }}</p>
-    </mat-card>
+      <div class="grid">
+        <mat-card class="stat-card primary">
+          <span>Total QRs</span>
+          <p>{{ d.totalQrs || 0 }}</p>
+        </mat-card>
 
-    <mat-card class="stat-card">
-      <span>Total Scans</span>
-      <p>{{ d.totalScans }}</p>
-    </mat-card>
+        <mat-card class="stat-card success">
+          <span>Active QRs</span>
+          <p>{{ d.activeQrs || 0 }}</p>
+        </mat-card>
 
-    <mat-card class="stat-card">
-      <span>Total Alerts</span>
-      <p>{{ d.totalAlerts }}</p>
-    </mat-card>
-  </div>
+        <mat-card class="stat-card muted">
+          <span>Inactive QRs</span>
+          <p>{{ d.inactiveQrs || 0 }}</p>
+        </mat-card>
 
-  <div class="quick-actions" *ngIf="data()">
-    <h3>Quick Actions</h3>
+        <mat-card class="stat-card danger">
+          <span>Blocked QRs</span>
+          <p>{{ d.blockedQrs || 0 }}</p>
+        </mat-card>
+      </div>
+    </section>
 
-    <div class="quick-grid">
-      <a routerLink="/admin/create-qr" class="quick-card">
-        <strong>Create QR</strong>
-        <span>Generate a new QR code for scooter warranty and emergency flow.</span>
-      </a>
+    <section class="stat-section">
+      <div class="section-heading">
+        <h3>Warranty & Emergency</h3>
+        <p>Monitor warranty registration and optional emergency profile adoption.</p>
+      </div>
 
-      <a routerLink="/admin/qr-list" class="quick-card">
-        <strong>QR Management</strong>
-        <span>View all QRs, block/unblock and check current QR status.</span>
-      </a>
+      <div class="grid">
+        <mat-card class="stat-card warning">
+          <span>Warranty Pending</span>
+          <p>{{ d.warrantyPending || 0 }}</p>
+        </mat-card>
 
-      <a routerLink="/admin/warranty-records" class="quick-card highlight">
-        <strong>Warranty Records</strong>
-        <span>View, search and export private warranty registrations.</span>
-      </a>
-    </div>
-  </div>
+        <mat-card class="stat-card success">
+          <span>Warranty Registered</span>
+          <p>{{ d.warrantyRegistered || 0 }}</p>
+        </mat-card>
+
+        <mat-card class="stat-card primary">
+          <span>Emergency Active</span>
+          <p>{{ d.emergencyActive || 0 }}</p>
+        </mat-card>
+
+        <mat-card class="stat-card muted">
+          <span>Emergency Skipped</span>
+          <p>{{ d.emergencySkipped || 0 }}</p>
+        </mat-card>
+      </div>
+    </section>
+
+    <section class="stat-section">
+      <div class="section-heading">
+        <h3>Customers & Activity</h3>
+        <p>See registered emergency users, scans and alert activity.</p>
+      </div>
+
+      <div class="grid small-grid">
+        <mat-card class="stat-card">
+          <span>Total Customers</span>
+          <p>{{ d.totalCustomers || 0 }}</p>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <span>Total Scans</span>
+          <p>{{ d.totalScans || 0 }}</p>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <span>Total Alerts</span>
+          <p>{{ d.totalAlerts || 0 }}</p>
+        </mat-card>
+      </div>
+    </section>
+
+    <section class="quick-actions">
+      <div class="section-heading">
+        <h3>Quick Actions</h3>
+        <p>Frequently used admin operations.</p>
+      </div>
+
+      <div class="quick-grid">
+        <a routerLink="/admin/create-qr" class="quick-card">
+          <div class="quick-icon">＋</div>
+          <div>
+            <strong>Create QR</strong>
+            <span>Generate a new QR code for warranty and emergency flow.</span>
+          </div>
+        </a>
+
+        <a routerLink="/admin/qr-list" class="quick-card">
+          <div class="quick-icon">#</div>
+          <div>
+            <strong>QR Management</strong>
+            <span>View all QRs, block/unblock and check current QR status.</span>
+          </div>
+        </a>
+
+        <a routerLink="/admin/warranty-records" class="quick-card highlight">
+          <div class="quick-icon">✓</div>
+          <div>
+            <strong>Warranty Records</strong>
+            <span>Search, view, edit and export warranty registrations.</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </ng-container>
 </div>

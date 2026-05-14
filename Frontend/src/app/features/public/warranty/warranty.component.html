@@ -1,7 +1,7 @@
 <div class="warranty-page">
   <header class="company-header">
     <div class="company-left">
-      <img src="assets/logo.png" alt="Company Logo" class="company-logo" />
+      <img src="assets/logo.webp" alt="Company Logo" class="company-logo" />
 
       <div>
         <h2>Tunwal E-Motors</h2>
@@ -9,17 +9,14 @@
       </div>
     </div>
 
-    <div class="company-right">
-      Emergency QR System
-    </div>
   </header>
 
   <div class="page-header">
     <div>
       <span class="badge">Warranty Registration</span>
-      <h1>Register Scooter Warranty</h1>
+      <h1>Register Vehicle Warranty</h1>
       <p>
-        Please fill the scooter, dealer and customer details carefully.
+        Please fill the vehicle, dealer and customer details carefully.
         These details will be used for future warranty claims.
       </p>
     </div>
@@ -36,25 +33,25 @@
         <div class="section-title">
           <div class="step-number">1</div>
           <div>
-            <h2>Scooter Details</h2>
-            <p>Enter numbers exactly as printed on the scooter parts or documents.</p>
+            <h2>Vehicle Details</h2>
+            <p>Enter numbers exactly as printed on the vehicle parts or documents.</p>
           </div>
         </div>
 
         <div class="field-grid">
           <mat-form-field appearance="outline">
-            <mat-label>Scooter Name</mat-label>
-            <input matInput formControlName="scooterName" placeholder="Example: Tunwal Mini Lithino" />
+            <mat-label>Vehicle Name</mat-label>
+            <input matInput formControlName="scooterName" placeholder="Example:Mini Lithino" />
             <mat-error *ngIf="form.controls.scooterName.hasError('required')">
-              Scooter name is required
+              Vehicle name is required
             </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Scooter Color</mat-label>
+            <mat-label>Vehicle Color</mat-label>
             <input matInput formControlName="scooterColor" placeholder="Example: White" />
             <mat-error *ngIf="form.controls.scooterColor.hasError('required')">
-              Scooter color is required
+              Vehicle color is required
             </mat-error>
           </mat-form-field>
 
@@ -112,7 +109,7 @@
         <div class="field-grid">
           <mat-form-field appearance="outline">
             <mat-label>Dealer Name</mat-label>
-            <input matInput formControlName="dealerName" placeholder="Example: Tunwal Pune Dealer" />
+            <input matInput formControlName="dealerName" placeholder= />
             <mat-error *ngIf="form.controls.dealerName.hasError('required')">
               Dealer name is required
             </mat-error>

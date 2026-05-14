@@ -1,23 +1,73 @@
-<div class="page">
-  <mat-card class="card">
-    <h2>Admin Login</h2>
+<div class="login-page">
+  <mat-card class="login-card">
+    <div class="brand-header">
+      <img src="/assets/logo.webp" alt="Tunwal E-Motors Logo" class="logo" />
+
+      <div>
+        <h1>Tunwal E-Motors</h1>
+        <p>Admin Portal</p>
+      </div>
+    </div>
+
+    <div class="login-title">
+      <h2>Sign in</h2>
+      <p>Enter your admin credentials to continue.</p>
+    </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()">
       <mat-form-field appearance="outline" class="full">
         <mat-label>Email</mat-label>
-        <input matInput formControlName="email" />
+        <input
+          matInput
+          formControlName="email"
+          autocomplete="username"
+          placeholder="Enter admin email"
+        />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full">
         <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password" />
+        <input
+          matInput
+          [type]="showPassword() ? 'text' : 'password'"
+          formControlName="password"
+          autocomplete="current-password"
+          placeholder="Enter password"
+        />
       </mat-form-field>
 
-      <div class="error" *ngIf="error()">{{ error() }}</div>
+      <div class="login-options">
+        <button type="button" class="text-btn" (click)="togglePassword()">
+          {{ showPassword() ? 'Hide password' : 'Show password' }}
+        </button>
 
-      <button mat-raised-button color="primary" class="full" [disabled]="loading()">
-        {{ loading() ? 'Logging in...' : 'Login' }}
+        <button
+          type="button"
+          class="text-btn"
+          *ngIf="!isProduction"
+          (click)="fillDemoLogin()"
+        >
+          Fill test login
+        </button>
+      </div>
+
+      <div class="error-box" *ngIf="error()">
+        {{ error() }}
+      </div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        class="login-btn"
+        [disabled]="loading()"
+      >
+        {{ loading() ? 'Signing in...' : 'Login' }}
       </button>
     </form>
+
+    <div class="footer-note">
+      Authorized access only.
+    </div>
   </mat-card>
 </div>

@@ -1,10 +1,9 @@
 <div class="warranty-admin-page">
   <div class="page-header">
     <div>
-      <span class="badge">Admin Only</span>
       <h1>Warranty Records</h1>
       <p>
-        View, search, verify and export private warranty registration records.
+        View, search, filter, verify and export private warranty registration records.
       </p>
     </div>
 
@@ -20,8 +19,8 @@
     </div>
 
     <div class="summary-card">
-      <span>Search Mode</span>
-      <strong>{{ search ? 'Filtered' : 'All Records' }}</strong>
+      <span>Current Filter</span>
+      <strong>{{ activeFilterText }}</strong>
     </div>
 
     <div class="summary-card">
@@ -30,21 +29,75 @@
     </div>
   </div>
 
-  <div class="toolbar">
-    <input
-      type="text"
-      [(ngModel)]="search"
-      placeholder="Search QR, customer, contact, chassis, motor, battery, dealer, state..."
-      (keyup.enter)="loadRecords()"
-    />
+  <div class="filter-card">
+    <div class="filter-title">
+      <div>
+        <h2>Filter Records</h2>
+        <p>
+          Use search, date range, or month filter before downloading Excel.
+          Date filters are based on warranty registration date.
+        </p>
+      </div>
+    </div>
 
-    <button type="button" (click)="loadRecords()">
-      Search
-    </button>
+    <div class="filter-grid">
+      <div class="filter-field wide">
+        <label>Search</label>
+        <input
+          type="text"
+          [(ngModel)]="search"
+          placeholder="Search QR, customer, contact, chassis, motor, battery, dealer, state..."
+          (keyup.enter)="loadRecords()"
+        />
+      </div>
 
-    <button type="button" class="clear-btn" (click)="clearSearch()">
-      Clear
-    </button>
+      <div class="filter-field">
+        <label>From Date</label>
+        <input
+          type="date"
+          [(ngModel)]="startDate"
+          (change)="onDateRangeChange()"
+        />
+      </div>
+
+      <div class="filter-field">
+        <label>To Date</label>
+        <input
+          type="date"
+          [(ngModel)]="endDate"
+          (change)="onDateRangeChange()"
+        />
+      </div>
+
+      <div class="filter-field">
+        <label>Month</label>
+        <input
+          type="month"
+          [(ngModel)]="month"
+          (change)="onMonthChange()"
+        />
+      </div>
+    </div>
+
+    <div class="filter-help">
+      <span>
+        Tip: Selecting a month will clear From Date and To Date. Selecting a date range will clear Month.
+      </span>
+    </div>
+
+    <div class="filter-actions">
+      <button type="button" class="search-btn" (click)="loadRecords()">
+        Apply Filter
+      </button>
+
+      <button type="button" class="clear-btn" (click)="clearFilters()">
+        Clear Filter
+      </button>
+
+      <button type="button" class="excel-btn" (click)="exportExcel()" [disabled]="exporting()">
+        {{ exporting() ? 'Downloading...' : 'Download Filtered Excel' }}
+      </button>
+    </div>
   </div>
 
   <div class="error-box" *ngIf="error()">
@@ -56,6 +109,13 @@
   </div>
 
   <div class="table-card" *ngIf="!loading()">
+    <div class="table-header">
+      <div>
+        <h2>Warranty List</h2>
+        <p>{{ totalRecords }} record(s) found</p>
+      </div>
+    </div>
+
     <div class="table-wrap">
       <table>
         <thead>
@@ -70,6 +130,7 @@
             <th>Dealer</th>
             <th>State</th>
             <th>Date of Sale</th>
+            <th>Registered At</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -86,6 +147,7 @@
             <td>{{ record.dealerName }}</td>
             <td>{{ record.state }}</td>
             <td>{{ record.dateOfSale | date:'dd-MM-yyyy' }}</td>
+            <td>{{ record.createdAt | date:'dd-MM-yyyy, h:mm a' }}</td>
             <td>
               <button class="view-btn" type="button" (click)="openDetail(record.qrId)">
                 View
@@ -94,8 +156,11 @@
           </tr>
 
           <tr *ngIf="records().length === 0">
-            <td colspan="11" class="empty-state">
-              No warranty records found.
+            <td colspan="12" class="empty-state">
+              <div class="empty-box">
+                <strong>No warranty records found.</strong>
+                <span>Try clearing filters or checking another date range.</span>
+              </div>
             </td>
           </tr>
         </tbody>

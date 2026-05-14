@@ -2,38 +2,60 @@ import { Routes } from '@angular/router';
 import { adminAuthGuard } from './core/guards/admin-auth.guard';
 
 export const routes: Routes = [
+  // -------------------------
+  // Default Redirect
+  // -------------------------
+  {
+    path: '',
+    redirectTo: 'admin/login',
+    pathMatch: 'full'
+  },
+
+  // -------------------------
+  // Admin Routes
+  // -------------------------
   {
     path: 'admin/login',
     loadComponent: () =>
-      import('./features/admin/login/login.component').then(m => m.LoginComponent)
+      import('./features/admin/login/login.component').then(
+        (m) => m.LoginComponent
+      )
   },
 
   {
     path: 'admin/dashboard',
     canActivate: [adminAuthGuard],
     loadComponent: () =>
-      import('./features/admin/dashboard/dashboard.component').then(m => m.DashboardComponent)
+      import('./features/admin/dashboard/dashboard.component').then(
+        (m) => m.DashboardComponent
+      )
   },
 
   {
     path: 'admin/create-qr',
     canActivate: [adminAuthGuard],
     loadComponent: () =>
-      import('./features/admin/create-qr/create-qr.component').then(m => m.CreateQrComponent)
+      import('./features/admin/create-qr/create-qr.component').then(
+        (m) => m.CreateQrComponent
+      )
   },
 
   {
     path: 'admin/qr-list',
     canActivate: [adminAuthGuard],
     loadComponent: () =>
-      import('./features/admin/qr-list/qr-list.component').then(m => m.QrListComponent)
+      import('./features/admin/qr-list/qr-list.component').then(
+        (m) => m.QrListComponent
+      )
   },
 
   {
     path: 'admin/qr/:id',
     canActivate: [adminAuthGuard],
     loadComponent: () =>
-      import('./features/admin/qr-details/qr-details.component').then(m => m.QrDetailsComponent)
+      import('./features/admin/qr-details/qr-details.component').then(
+        (m) => m.QrDetailsComponent
+      )
   },
 
   {
@@ -41,7 +63,7 @@ export const routes: Routes = [
     canActivate: [adminAuthGuard],
     loadComponent: () =>
       import('./features/admin/warranty-records/warranty-records.component').then(
-        m => m.WarrantyRecordsComponent
+        (m) => m.WarrantyRecordsComponent
       )
   },
 
@@ -50,72 +72,88 @@ export const routes: Routes = [
     canActivate: [adminAuthGuard],
     loadComponent: () =>
       import('./features/admin/warranty-detail/warranty-detail.component').then(
-        m => m.WarrantyDetailComponent
+        (m) => m.WarrantyDetailComponent
       )
   },
 
+  // -------------------------
+  // Public QR Flow
+  // -------------------------
   {
     path: 'qr/:qrId',
     loadComponent: () =>
-      import('./features/public/activate/activate.component').then(m => m.ActivateComponent)
+      import('./features/public/activate/activate.component').then(
+        (m) => m.ActivateComponent
+      )
   },
 
   {
     path: 'activate/:qrId',
     loadComponent: () =>
-      import('./features/public/activate/activate.component').then(m => m.ActivateComponent)
-  },
-
-  {
-    path: 'warranty/:qrId',
-    loadComponent: () =>
-      import('./features/public/warranty/warranty.component').then(m => m.WarrantyComponent)
-  },
-
-  {
-    path: 'warranty-success/:qrId',
-    loadComponent: () =>
-      import('./features/public/warranty-success/warranty-success.component').then(
-        m => m.WarrantySuccessComponent
+      import('./features/public/activate/activate.component').then(
+        (m) => m.ActivateComponent
       )
   },
 
   {
     path: 'verify-otp/:qrId',
     loadComponent: () =>
-      import('./features/public/verify-otp/verify-otp.component').then(m => m.VerifyOtpComponent)
+      import('./features/public/verify-otp/verify-otp.component').then(
+        (m) => m.VerifyOtpComponent
+      )
+  },
+
+  {
+    path: 'warranty/:qrId',
+    loadComponent: () =>
+      import('./features/public/warranty/warranty.component').then(
+        (m) => m.WarrantyComponent
+      )
+  },
+
+  {
+    path: 'warranty-success/:qrId',
+    loadComponent: () =>
+      import('./features/public/warranty-success/warranty-success.component').then(
+        (m) => m.WarrantySuccessComponent
+      )
   },
 
   {
     path: 'register/:qrId',
     loadComponent: () =>
-      import('./features/public/register/register.component').then(m => m.RegisterComponent)
+      import('./features/public/register/register.component').then(
+        (m) => m.RegisterComponent
+      )
   },
 
   {
     path: 'emergency/:qrId',
     loadComponent: () =>
-      import('./features/public/emergency/emergency.component').then(m => m.EmergencyComponent)
+      import('./features/public/emergency/emergency.component').then(
+        (m) => m.EmergencyComponent
+      )
   },
 
   {
     path: 'blocked/:qrId',
     loadComponent: () =>
-      import('./features/public/blocked/blocked.component').then(m => m.BlockedComponent)
+      import('./features/public/blocked/blocked.component').then(
+        (m) => m.BlockedComponent
+      )
   },
 
   {
     path: 'blocked',
     loadComponent: () =>
-      import('./features/public/blocked/blocked.component').then(m => m.BlockedComponent)
+      import('./features/public/blocked/blocked.component').then(
+        (m) => m.BlockedComponent
+      )
   },
 
-  {
-    path: '',
-    redirectTo: 'admin/login',
-    pathMatch: 'full'
-  },
-
+  // -------------------------
+  // Fallback
+  // -------------------------
   {
     path: '**',
     redirectTo: 'admin/login'

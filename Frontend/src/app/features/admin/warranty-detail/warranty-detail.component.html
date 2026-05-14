@@ -1,7 +1,7 @@
 <div class="detail-page">
   <div class="page-header">
     <div>
-      <span class="badge">Admin Only</span>
+      <!-- <span class="badge">Admin Only</span> -->
       <h1>Warranty Registration Detail</h1>
       <p>View and edit private warranty information for verification and support.</p>
     </div>
@@ -53,18 +53,18 @@
           <div class="card-heading">
             <div class="icon-box">1</div>
             <div>
-              <h2>Scooter Details</h2>
-              <p>Edit scooter and component numbers.</p>
+              <h2>Vehicle Details</h2>
+              <p>Edit vehicle and component numbers.</p>
             </div>
           </div>
 
           <div class="edit-field">
-            <label>Scooter Name</label>
+            <label>Vehicle Name</label>
             <input formControlName="scooterName" placeholder="Enter scooter name" />
           </div>
 
           <div class="edit-field">
-            <label>Scooter Color</label>
+            <label>Vehicle Color</label>
             <input formControlName="scooterColor" placeholder="Enter scooter color" />
           </div>
 
@@ -148,9 +148,6 @@
             <input maxlength="10" formControlName="contactNumber" placeholder="Enter 10 digit number" />
           </div>
 
-          <div class="privacy-note">
-            QR ID cannot be edited. Emergency contacts are not part of warranty registration.
-          </div>
         </section>
       </div>
 
@@ -172,19 +169,19 @@
           <div class="card-heading">
             <div class="icon-box">1</div>
             <div>
-              <h2>Scooter Details</h2>
+              <h2>Vehicle Details</h2>
               <p>Vehicle identification and component numbers.</p>
             </div>
           </div>
 
           <div class="info-list">
             <div class="info-row">
-              <span>Scooter Name</span>
+              <span>Vehicle Name</span>
               <strong>{{ item.scooterName || '-' }}</strong>
             </div>
 
             <div class="info-row">
-              <span>Scooter Color</span>
+              <span>Vehicle Color</span>
               <strong>{{ item.scooterColor || '-' }}</strong>
             </div>
 
@@ -231,7 +228,7 @@
             </div>
 
             <div class="info-row">
-              <span>Scooter Date of Sale</span>
+              <span>Vehicle Date of Sale</span>
               <strong>{{ item.dateOfSale | date:'dd-MM-yyyy' }}</strong>
             </div>
 
@@ -268,9 +265,6 @@
             </div>
           </div>
 
-          <div class="privacy-note">
-            Emergency contact details are not part of warranty registration.
-          </div>
         </section>
       </div>
     </ng-template>
